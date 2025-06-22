@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { useAuthStore } from '@/stores';
+
 import BrandIcon from '@/components/icons/BrandIcon.vue'
 import LogoutIcon from '@/components/icons/LogoutIcon.vue'
+
+const auth = useAuthStore();
 </script>
 
 <template>
@@ -17,7 +21,7 @@ import LogoutIcon from '@/components/icons/LogoutIcon.vue'
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="auth.isAuthenticated">
             <li class="nav-item">
               <RouterLink class="nav-link" to="/" active-class="active">
                 Поиск застрахованных
@@ -39,8 +43,11 @@ import LogoutIcon from '@/components/icons/LogoutIcon.vue'
             </li>
           </ul>
           <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">
+            <li class="nav-item" v-if="auth.isAuthenticated && auth.user">
+              <span class="nav-link">{{ auth.user.name }}</span>
+            </li>
+            <li class="nav-item" v-if="auth.isAuthenticated">
+              <a class="nav-link" aria-current="page" href="#" @click.prevent="auth.logout()">
                 <span class="me-2">Выход</span>
                 <LogoutIcon />
               </a>

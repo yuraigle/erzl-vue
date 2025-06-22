@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores';
+
 import ReportVdiView from '@/views/ReportVdiView.vue'
 import ReportVdaView from '@/views/ReportVdaView.vue'
 import HomeView from '@/views/HomeView.vue'
@@ -17,9 +19,9 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const publicPages = ['/login'];
   const authRequired = !publicPages.includes(to.path);
-  // const auth = useAuthStore();
+  const auth = useAuthStore();
 
-  if (authRequired) {
+  if (authRequired && !auth.isAuthenticated) {
     // auth.returnUrl = to.fullPath;
     return '/login';
   }

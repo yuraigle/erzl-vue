@@ -6,25 +6,14 @@ import LogoutIcon from './components/icons/LogoutIcon.vue'
 
 <template>
   <header>
-    <nav
-      class="navbar navbar-expand-lg py-1"
-      style="background-color: #e3f2fd"
-      data-bs-theme="light"
-    >
+    <nav class="navbar navbar-expand-lg py-1 bg-dark navbar-dark">
       <div class="container">
         <RouterLink class="navbar-brand" to="/">
           <BrandIcon />
           <span class="ms-2">Мониторинг ФЕРЗЛ</span>
         </RouterLink>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -35,13 +24,8 @@ import LogoutIcon from './components/icons/LogoutIcon.vue'
               </RouterLink>
             </li>
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
                 Данные витрин
               </a>
               <ul class="dropdown-menu">

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import BrandIcon from '@/components/icons/BrandIcon.vue'
-import LogoutIcon from './components/icons/LogoutIcon.vue'
+import LogoutIcon from '@/components/icons/LogoutIcon.vue'
 </script>
 
 <template>
   <header>
-    <nav class="navbar navbar-expand-lg py-1 bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-lg py-1 bg-primary" data-bs-theme="dark">
       <div class="container">
         <RouterLink class="navbar-brand" to="/">
           <BrandIcon />

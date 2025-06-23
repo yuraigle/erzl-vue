@@ -13,7 +13,7 @@ const auth = useAuthStore()
 <template>
   <header v-if="auth.isAuthenticated" class="border-bottom bg-body-tertiary">
     <nav class="navbar navbar-expand-lg py-1">
-      <div class="container">
+      <div class="container-fluid">
         <RouterLink class="navbar-brand" to="/">
           <BrandIcon />
           <span class="ms-2">Мониторинг ФЕРЗЛ</span>
@@ -67,7 +67,7 @@ const auth = useAuthStore()
               >
                 <UserScanIcon />
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-end">
                 <li>
                   <span class="dropdown-item" role="button">
                     <UserIcon />

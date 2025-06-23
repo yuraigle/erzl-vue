@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import {helpers} from '@vuelidate/validators'
 
 import EraserIcon from '@/components/icons/EraserIcon.vue'
 
@@ -18,13 +20,26 @@ const form = reactive({
   oip: '',
   oip_selected: false,
 })
+
+const rules = {
+  enp: helpers.withMessage('Формат ЕНП - 16 цифр', helpers.regex(/^\d{16}$/)),
+  ss: helpers.withMessage('Формат СНИЛС - 11 цифр', helpers.regex(/^\d{11}$/)),
+  oip: helpers.withMessage('Формат OIP - 12 цифр', helpers.regex(/^\d{12}$/)),
+};
+
+const v$ = useVuelidate(rules, form)
+
+const onSubmit = () => {
+  v$.value.$validate()
+}
+
 </script>
 
 <template>
   <div class="d-flex">
     <div class="search-container border-end px-3 flex-shrink-0">
       <h5 class="my-4">Параметры поиска</h5>
-      <form>
+      <form @submit.prevent="onSubmit">
         <div class="mb-2 d-flex">
           <div>
             <label for="enp" class="form-label inline small">ЕНП</label>

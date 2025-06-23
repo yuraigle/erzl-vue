@@ -21,8 +21,6 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       isLoading.value = true
 
-      // await new Promise(resolve => setTimeout(resolve, 3000));
-
       const response = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

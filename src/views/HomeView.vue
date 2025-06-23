@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
-  <div class="container-fluid">Поиск застрахованных</div>
+  <div class="container-fluid">Добро пожаловать</div>
 </template>

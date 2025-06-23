@@ -10,8 +10,8 @@ export interface User {
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
-  const isLoading = ref(false);
   const error = ref<string | null>(null);
+  const isLoading = ref(false);
   const isAuthenticated = computed(() => !!user.value);
 
   user.value = JSON.parse(localStorage.getItem('user') || 'null');
@@ -21,26 +21,33 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       isLoading.value = true
 
-      fetch('https://dummyjson.com/auth/login', {
+      // await new Promise(resolve => setTimeout(resolve, 3000));
+
+      const response = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.accessToken) {
-            user.value = {
-              id: data.id,
-              name: data.firstName + ' ' + data.lastName,
-              role: 'user',
-              token: data.accessToken,
-            }
-
-            localStorage.setItem('user', JSON.stringify(user.value));
-            window.location.href = '/';
-          }
+        .catch(() => {
+          throw new Error('Ошибка подключения к серверу')
         });
 
+      const data = await response.json()
+
+      if (!data || !data.accessToken) {
+        const message = data && data.message ? data.message : 'Ошибка авторизации'
+        throw new Error(message)
+      }
+
+      user.value = {
+        id: data.id,
+        name: data.firstName + ' ' + data.lastName,
+        role: 'user',
+        token: data.accessToken,
+      }
+
+      localStorage.setItem('user', JSON.stringify(user.value));
+      window.location.href = '/'; // todo router.push
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Ошибка авторизации'
       throw err
@@ -60,7 +67,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     user,
+    isLoading,
     isAuthenticated,
+    error,
     login,
     logout,
   };

@@ -1,4 +1,5 @@
-import 'bootswatch/dist/cosmo/bootstrap.min.css'
+// import 'bootswatch/dist/quartz/bootstrap.min.css'
+import '@/assets/bootstrap.scss'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 import { createApp } from 'vue'

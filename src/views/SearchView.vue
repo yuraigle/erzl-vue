@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { helpers } from '@vuelidate/validators'
+import { helpers, maxLength } from '@vuelidate/validators'
 
 import EraserIcon from '@/components/icons/EraserIcon.vue'
 
@@ -27,6 +27,12 @@ const validations = {
   },
   ss: {
     mask: helpers.withMessage('Формат СНИЛС - 11 цифр', helpers.regex(/^\d{3}-\d{3}-\d{3} \d{2}$/)),
+  },
+  doc_s: {
+    maxLength: helpers.withMessage('Максимум 10 символов', maxLength(10)),
+  },
+  doc_n: {
+    maxLength: helpers.withMessage('Максимум 20 символов', maxLength(20)),
   },
   fam: {
     mask: helpers.withMessage('Некорректные символы', helpers.regex(/^[А-ЯЁа-яё \-']{0,40}$/)),
@@ -178,25 +184,40 @@ const clearForm = () => {
         </div>
 
         <div class="mb-4 d-flex">
-          <label for="doc_s" class="d-none"></label>
-          <input
-            id="doc_s"
-            type="text"
-            class="form-control"
-            v-model="form.doc_s"
-            placeholder="Серия"
-            :disabled="form.doc_t == 0 || form.oip_selected"
-          />
+          <div>
+            <label for="doc_s" class="d-none"></label>
+            <input
+              id="doc_s"
+              type="text"
+              class="form-control"
+              placeholder="Серия"
+              v-model="form.doc_s"
+              :class="{ 'is-invalid': v$.doc_s.$errors.length > 0 }"
+              :disabled="form.doc_t == 0 || form.oip_selected"
+            />
+            <span v-if="v$.doc_s.$errors.length > 0" class="invalid-feedback">
+              {{ v$.doc_s.$errors[0].$message }}
+            </span>
+          </div>
+
           <div class="mx-2 doc-num-symbol">№</div>
-          <label for="doc_n" class="d-none"></label>
-          <input
-            id="doc_n"
-            type="text"
-            class="form-control"
-            v-model="form.doc_n"
-            placeholder="Номер"
-            :disabled="form.doc_t == 0 || form.oip_selected"
-          />
+
+          <div>
+            <label for="doc_n" class="d-none"></label>
+            <input
+              id="doc_n"
+              type="text"
+              class="form-control"
+              placeholder="Номер"
+              v-model="form.doc_n"
+              :class="{ 'is-invalid': v$.doc_n.$errors.length > 0 }"
+              :disabled="form.doc_t == 0 || form.oip_selected"
+            />
+            <span v-if="v$.doc_n.$errors.length > 0" class="invalid-feedback">
+              {{ v$.doc_n.$errors[0].$message }}
+            </span>
+          </div>
+
         </div>
 
         <hr />

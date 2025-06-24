@@ -2,6 +2,7 @@
 import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, maxLength } from '@vuelidate/validators'
+import { useFerzlStore } from '@/stores/ferzl.store'
 
 import EraserIcon from '@/components/icons/EraserIcon.vue'
 
@@ -52,16 +53,6 @@ const validations = {
 }
 
 const v$ = useVuelidate(validations, form)
-
-const onSubmit = async () => {
-  const isCorrect = await v$.value.$validate()
-
-  if (isCorrect) {
-    console.log('OK')
-  } else {
-    console.log('Errors')
-  }
-}
 
 const onInputEnp = (e: Event) => {
   form.enp = (e.target as HTMLInputElement).value
@@ -126,6 +117,16 @@ const clearForm = () => {
   form.okato = ''
   form.oip = ''
   form.oip_selected = false
+}
+
+const ferzl = useFerzlStore()
+
+const onSubmit = async () => {
+  const isCorrect = await v$.value.$validate()
+
+  if (isCorrect) {
+    ferzl.searchCriteria(form)
+  }
 }
 </script>
 
@@ -217,7 +218,6 @@ const clearForm = () => {
               {{ v$.doc_n.$errors[0].$message }}
             </span>
           </div>
-
         </div>
 
         <hr />

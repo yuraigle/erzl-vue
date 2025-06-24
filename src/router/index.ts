@@ -22,7 +22,6 @@ router.beforeEach(async (to) => {
   const auth = useAuthStore();
 
   if (authRequired && !auth.isAuthenticated) {
-    // auth.returnUrl = to.fullPath;
     return '/login';
   }
 });

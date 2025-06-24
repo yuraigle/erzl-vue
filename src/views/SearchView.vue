@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import {helpers} from '@vuelidate/validators'
+import { helpers } from '@vuelidate/validators'
 
 import EraserIcon from '@/components/icons/EraserIcon.vue'
 
@@ -21,18 +21,106 @@ const form = reactive({
   oip_selected: false,
 })
 
-const rules = {
-  enp: helpers.withMessage('Формат ЕНП - 16 цифр', helpers.regex(/^\d{16}$/)),
-  ss: helpers.withMessage('Формат СНИЛС - 11 цифр', helpers.regex(/^\d{11}$/)),
-  oip: helpers.withMessage('Формат OIP - 12 цифр', helpers.regex(/^\d{12}$/)),
-};
-
-const v$ = useVuelidate(rules, form)
-
-const onSubmit = () => {
-  v$.value.$validate()
+const validations = {
+  enp: {
+    mask: helpers.withMessage('Формат ЕНП - 16 цифр', helpers.regex(/^\d{4} \d{4} \d{4} \d{4}$/)),
+  },
+  ss: {
+    mask: helpers.withMessage('Формат СНИЛС - 11 цифр', helpers.regex(/^\d{3}-\d{3}-\d{3} \d{2}$/)),
+  },
+  fam: {
+    mask: helpers.withMessage('Некорректные символы', helpers.regex(/^[А-ЯЁа-яё \-']{0,40}$/)),
+  },
+  im: {
+    mask: helpers.withMessage('Некорректные символы', helpers.regex(/^[А-ЯЁа-яё \-']{0,40}$/)),
+  },
+  ot: {
+    mask: helpers.withMessage('Некорректные символы', helpers.regex(/^[А-ЯЁа-яё \-']{0,40}$/)),
+  },
+  okato: {
+    mask: helpers.withMessage('Формат OKATO - 5 цифр', helpers.regex(/^\d{5}$/)),
+  },
+  oip: {
+    mask: helpers.withMessage('Формат OIP - 12 цифр', helpers.regex(/^\d{12}$/)),
+  },
 }
 
+const v$ = useVuelidate(validations, form)
+
+const onSubmit = async () => {
+  const isCorrect = await v$.value.$validate()
+
+  if (isCorrect) {
+    console.log('OK')
+  } else {
+    console.log('Errors')
+  }
+}
+
+const onInputEnp = (e: Event) => {
+  form.enp = (e.target as HTMLInputElement).value
+  form.enp = form.enp
+    .replace(/[^\d]+/g, '')
+    .substring(0, 16)
+    .replace(/^(\d{12})(\d)/, '$1 $2')
+    .replace(/^(\d{8})(\d)/, '$1 $2')
+    .replace(/^(\d{4})(\d)/, '$1 $2')
+}
+
+const onInputSs = (e: Event) => {
+  form.ss = (e.target as HTMLInputElement).value
+  form.ss = form.ss
+    .replace(/[^\d]+/g, '')
+    .substring(0, 11)
+    .replace(/^(\d{9})(\d)/, '$1 $2')
+    .replace(/^(\d{6})(\d)/, '$1-$2')
+    .replace(/^(\d{3})(\d)/, '$1-$2')
+}
+
+const onInputOkato = (e: Event) => {
+  form.okato = (e.target as HTMLInputElement).value
+  form.okato = form.okato.replace(/[^\d]+/g, '').substring(0, 5)
+}
+
+const onInputOip = (e: Event) => {
+  form.oip = (e.target as HTMLInputElement).value
+  form.oip = form.oip.replace(/[^\d]+/g, '').substring(0, 12)
+}
+
+const maskFio = (s: string) => {
+  return s.replace(/[^А-ЯЁа-яё \-']+/g, '').substring(0, 40)
+}
+
+const onInputFam = (e: Event) => {
+  form.fam = (e.target as HTMLInputElement).value
+  form.fam = maskFio(form.fam)
+}
+
+const onInputIm = (e: Event) => {
+  form.im = (e.target as HTMLInputElement).value
+  form.im = maskFio(form.im)
+}
+
+const onInputOt = (e: Event) => {
+  form.ot = (e.target as HTMLInputElement).value
+  form.ot = maskFio(form.ot)
+}
+
+const clearForm = () => {
+  form.enp = ''
+  form.ss = ''
+  form.doc_t = 0
+  form.doc_s = ''
+  form.doc_n = ''
+  form.fam = ''
+  form.im = ''
+  form.ot = ''
+  form.dr_from = ''
+  form.dr_to = ''
+  form.okato = ''
+  form.oip = ''
+  form.oip_selected = false
+}
 </script>
 
 <template>
@@ -46,12 +134,17 @@ const onSubmit = () => {
           </div>
           <div class="flex-grow-1">
             <input
-              type="text"
               id="enp"
+              type="text"
               class="form-control"
-              v-model="form.enp"
+              @input="onInputEnp"
+              :value="form.enp"
+              :class="{ 'is-invalid': v$.enp.$errors.length > 0 }"
               :disabled="form.oip_selected"
             />
+            <span v-if="v$.enp.$error" class="invalid-feedback">
+              {{ v$.enp.$errors[0].$message }}
+            </span>
           </div>
         </div>
 
@@ -61,24 +154,23 @@ const onSubmit = () => {
           </div>
           <div class="flex-grow-1">
             <input
-              type="text"
               id="ss"
+              type="text"
               class="form-control"
-              v-model="form.ss"
+              @input="onInputSs"
+              :value="form.ss"
+              :class="{ 'is-invalid': v$.ss.$errors.length > 0 }"
               :disabled="form.oip_selected"
             />
+            <span v-if="v$.ss.$errors.length > 0" class="invalid-feedback">
+              {{ v$.ss.$errors[0].$message }}
+            </span>
           </div>
         </div>
 
         <div class="mb-2">
           <label for="doc_t" class="d-none"></label>
-          <select
-            type="text"
-            id="doc_t"
-            class="form-select"
-            v-model="form.doc_t"
-            :disabled="form.oip_selected"
-          >
+          <select id="doc_t" class="form-select" v-model="form.doc_t" :disabled="form.oip_selected">
             <option value="0">Выбрать документ</option>
             <option value="14">14 - Паспорт гражданина РФ</option>
             <option value="3">3 - Свидетельство о рождении, выданное в РФ</option>
@@ -88,9 +180,9 @@ const onSubmit = () => {
         <div class="mb-4 d-flex">
           <label for="doc_s" class="d-none"></label>
           <input
+            id="doc_s"
             type="text"
             class="form-control"
-            id="doc_s"
             v-model="form.doc_s"
             placeholder="Серия"
             :disabled="form.doc_t == 0 || form.oip_selected"
@@ -98,9 +190,9 @@ const onSubmit = () => {
           <div class="mx-2 doc-num-symbol">№</div>
           <label for="doc_n" class="d-none"></label>
           <input
+            id="doc_n"
             type="text"
             class="form-control"
-            id="doc_n"
             v-model="form.doc_n"
             placeholder="Номер"
             :disabled="form.doc_t == 0 || form.oip_selected"
@@ -115,12 +207,17 @@ const onSubmit = () => {
           </div>
           <div class="flex-grow-1">
             <input
-              type="text"
               id="fam"
+              type="text"
               class="form-control"
-              v-model="form.fam"
+              @input="onInputFam"
+              :value="form.fam"
+              :class="{ 'is-invalid': v$.fam.$errors.length > 0 }"
               :disabled="form.oip_selected"
             />
+            <span v-if="v$.fam.$errors.length > 0" class="invalid-feedback">
+              {{ v$.fam.$errors[0].$message }}
+            </span>
           </div>
         </div>
 
@@ -130,12 +227,17 @@ const onSubmit = () => {
           </div>
           <div class="flex-grow-1">
             <input
-              type="text"
               id="im"
+              type="text"
               class="form-control"
-              v-model="form.im"
+              @input="onInputIm"
+              :value="form.im"
+              :class="{ 'is-invalid': v$.im.$errors.length > 0 }"
               :disabled="form.oip_selected"
             />
+            <span v-if="v$.im.$errors.length > 0" class="invalid-feedback">
+              {{ v$.im.$errors[0].$message }}
+            </span>
           </div>
         </div>
 
@@ -145,12 +247,17 @@ const onSubmit = () => {
           </div>
           <div class="flex-grow-1">
             <input
-              type="text"
               id="ot"
+              type="text"
               class="form-control"
-              v-model="form.ot"
+              @input="onInputOt"
+              :value="form.ot"
+              :class="{ 'is-invalid': v$.ot.$errors.length > 0 }"
               :disabled="form.oip_selected"
             />
+            <span v-if="v$.ot.$errors.length > 0" class="invalid-feedback">
+              {{ v$.ot.$errors[0].$message }}
+            </span>
           </div>
         </div>
 
@@ -161,17 +268,17 @@ const onSubmit = () => {
           <div class="flex-grow-1">
             <div class="input-group">
               <input
+                id="dr_from"
                 type="date"
                 class="form-control"
-                id="dr_from"
                 v-model="form.dr_from"
                 :disabled="form.oip_selected"
               />
               <span class="input-group-text">&mdash;</span>
               <input
+                id="dr_to"
                 type="date"
                 class="form-control"
-                id="dr_to"
                 v-model="form.dr_to"
                 :disabled="form.oip_selected"
               />
@@ -185,41 +292,61 @@ const onSubmit = () => {
           </div>
           <div class="flex-grow-1">
             <input
-              type="text"
               id="okato"
-              class="form-control mb-0"
-              v-model="form.okato"
+              type="text"
+              class="form-control"
               placeholder="25000"
+              @input="onInputOkato"
+              :value="form.okato"
               :disabled="form.oip_selected"
+              :class="{ 'is-invalid': v$.okato.$errors.length > 0 }"
             />
+            <div v-if="v$.okato.$errors.length > 0" class="invalid-feedback">
+              {{ v$.okato.$errors[0].$message }}
+            </div>
           </div>
         </div>
 
         <hr />
 
-        <div class="mb-4 d-flex">
+        <div class="mb-4 d-flex" title="Идентификатор персоны в ФЕРЗЛ">
           <div>
             <label for="oip" class="form-label inline small">OIP</label>
           </div>
           <div class="flex-grow-1">
             <div class="input-group">
               <span class="input-group-text">
-                <input class="form-check-input mt-0" type="checkbox" v-model="form.oip_selected" />
+                <input
+                  class="form-check-input mt-0"
+                  type="checkbox"
+                  id="oip_selected"
+                  v-model="form.oip_selected"
+                />
               </span>
               <input
-                type="text"
                 id="oip"
+                type="text"
                 class="form-control"
-                v-model="form.oip"
+                @input="onInputOip"
+                :value="form.oip"
                 :disabled="!form.oip_selected"
+                :class="{ 'is-invalid': v$.oip.$errors.length > 0 }"
               />
+              <span v-if="v$.oip.$errors.length > 0" class="invalid-feedback">
+                {{ v$.oip.$errors[0].$message }}
+              </span>
             </div>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="flex-shrink-1">
-            <button type="button" class="btn btn-outline-dark me-3">
+            <button
+              type="button"
+              class="btn btn-outline-dark me-3"
+              title="Очистить форму"
+              @click="clearForm"
+            >
               <EraserIcon />
             </button>
           </div>
@@ -236,7 +363,6 @@ const onSubmit = () => {
 <style lang="css" scoped>
 .search-container {
   width: 420px;
-  height: 100%;
   padding: 10px;
 }
 
@@ -249,5 +375,9 @@ label.inline {
   margin-bottom: 0;
   display: block;
   width: 75px !important;
+}
+
+.invalid-feedback {
+  font-size: smaller;
 }
 </style>

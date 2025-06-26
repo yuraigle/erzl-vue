@@ -1,10 +1,12 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useToastsStore } from '@/stores'
+import { API_URL, BEARER_TOKEN } from '@/../environment';
 
 export interface SearchParams {
-  enp: string
-  ss: string
-  oip: string
+  enp: string | null
+  ss: string | null
+  oip: string | null
 }
 
 export interface PersonDataShort {
@@ -13,6 +15,16 @@ export interface PersonDataShort {
   birthDay: Date
   gender: number
   oip: string
+}
+
+const convertParams = (params: SearchParams) => {
+  const dto = {} as SearchParams;
+
+  dto.enp = params.enp ? params.enp.replace(/[^0-9]+/g, '') : null;
+  dto.ss = params.ss ? params.ss.replace(/[^0-9]+/g, '') : null;
+  dto.oip = params.oip ? params.oip.replace(/[^0-9]+/g, '') : null;
+
+  return dto;
 }
 
 export const useFerzlStore = defineStore('ferzl', () => {
@@ -24,20 +36,29 @@ export const useFerzlStore = defineStore('ferzl', () => {
     try {
       isLoading.value = true
 
-      const response = await fetch('http://10.10.11.59:8084/api/search-criteria', {
+      const response = await fetch(API_URL + '/search-criteria', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + BEARER_TOKEN,
+        },
+        body: JSON.stringify(convertParams(params)),
       })
         .catch(() => {
           throw new Error('Ошибка подключения к серверу')
         });
 
-        const data = await response.json()
-        console.log(data)
+      const data = await response.json()
+
+      if (!response.ok) {
+        const message = Array.isArray(data) && data.length > 0 ? data[0] : 'Ошибка поиска';
+        throw new Error(message);
+      }
+
+      console.log(data)
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Ошибка поиска'
-      throw err
+      const message = err instanceof Error ? err.message : 'Ошибка поиска';
+      useToastsStore().showError(message);
     } finally {
       isLoading.value = false
     }

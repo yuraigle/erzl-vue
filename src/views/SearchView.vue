@@ -372,7 +372,9 @@ const onSubmit = async () => {
             </button>
           </div>
           <div class="flex-grow-1">
-            <button type="submit" class="btn btn-primary w-100">Поиск</button>
+            <button type="submit" class="btn btn-primary w-100" :disabled="ferzl.isLoading">
+              Поиск
+            </button>
           </div>
         </div>
       </form>

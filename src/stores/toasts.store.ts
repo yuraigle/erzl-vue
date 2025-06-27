@@ -1,26 +1,35 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
+interface ToastMessage {
+  id: number
+  message: string
+  type: 'success' | 'danger' | 'info'
+}
+
 export const useToastsStore = defineStore('toasts', () => {
-  const message = ref<string | null>(null);
-  const type = ref<'success' | 'danger' | 'info'>('info');
+  const messages = ref<ToastMessage[]>([]);
+  const nextId = ref(0);
 
   const showError = (msg: string) => {
     showMessage(msg, 'danger');
   }
 
   const showMessage = (msg: string, t: 'success' | 'danger' | 'info') => {
-    message.value = msg;
-    type.value = t;
+    const a = { id: nextId.value++, message: msg, type: t } as ToastMessage;
+    messages.value.push(a);
 
     setTimeout(() => {
-      message.value = null;
+      messages.value.forEach((m) => {
+        if (m.id === a.id) {
+          messages.value.splice(messages.value.indexOf(m), 1);
+        }
+      });
     }, 3000);
   }
 
   return {
-    message,
-    type,
+    messages,
     showError,
     showMessage,
   };

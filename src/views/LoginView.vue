@@ -14,10 +14,6 @@ const login = () => {
 <template>
   <div class="w-100 mx-auto mt-5 login-form">
     <h1 class="h3 text-center">Вход в систему</h1>
-    <div v-if="auth.error" class="alert alert-danger alert-dismissible fade show">
-      {{ auth.error }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
     <form>
       <div class="mb-2">
         <label for="username" class="form-label"></label>

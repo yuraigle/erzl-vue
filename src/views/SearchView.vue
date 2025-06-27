@@ -34,7 +34,10 @@ const ferzlStore = useFerzlStore();
             <td>{{ person.enp }}</td>
             <td>{{ person.gender === 1 ? 'М' : 'Ж' }}</td>
             <td>
-              <button class="btn btn-link p-0" @click.prevent="ferzlStore.searchOip(person.oip)">
+              <button
+                class="btn btn-link p-0"
+                :disabled="ferzlStore.isLoading2"
+                @click.prevent="ferzlStore.searchOip(person.oip)">
                 Подробнее
               </button>
             </td>

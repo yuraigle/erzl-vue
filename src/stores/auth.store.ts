@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
+import { useToastsStore } from '@/stores'
 
 export interface User {
   id: string
@@ -10,7 +11,6 @@ export interface User {
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
-  const error = ref<string | null>(null);
   const isLoading = ref(false);
   const isAuthenticated = computed(() => !!user.value);
 
@@ -47,8 +47,8 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('user', JSON.stringify(user.value));
       window.location.href = '/'; // todo router.push
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Ошибка авторизации'
-      throw err
+      const message = err instanceof Error ? err.message : 'Ошибка авторизации';
+      useToastsStore().showError(message);
     } finally {
       isLoading.value = false
     }
@@ -57,7 +57,6 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = () => {
     user.value = null;
     isLoading.value = false;
-    error.value = null;
 
     localStorage.removeItem('user');
     window.location.href = '/login'
@@ -67,7 +66,6 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isLoading,
     isAuthenticated,
-    error,
     login,
     logout,
   };

@@ -35,6 +35,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const personList = ref<PersonDataShort[]>([]);
   const personData = ref<PersonDataFull | null>(null);
   const isLoading = ref(false);
+  const isLoading2 = ref(false);
 
   const searchCriteria = async (params: SearchParams) => {
     try {
@@ -71,6 +72,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
 
   const searchOip = async (oip: string) => {
     try {
+      isLoading2.value = true
       personData.value = null;
 
       const response = await fetch(API_URL + '/person-data', {
@@ -93,9 +95,14 @@ export const useFerzlStore = defineStore('ferzl', () => {
       }
 
       personData.value = data;
+
+      console.log(personData.value?.dudl)
+
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Ошибка поиска';
       useToastsStore().showError(message);
+    } finally {
+      isLoading2.value = false
     }
   }
 
@@ -103,6 +110,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
     personList,
     personData,
     isLoading,
+    isLoading2,
     searchCriteria,
     searchOip
   };

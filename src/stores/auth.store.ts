@@ -7,16 +7,15 @@ export interface User {
   name: string
   role: string
   token: string
+  till: number
 }
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const isLoading = ref(false);
-  const isAuthenticated = computed(() => !!user.value);
 
   user.value = JSON.parse(localStorage.getItem('user') || 'null');
 
-  // Actions
   const login = async (username: string, password: string) => {
     try {
       isLoading.value = true
@@ -42,6 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
         name: data.firstName + ' ' + data.lastName,
         role: 'user',
         token: data.accessToken,
+        till: Date.now() + 12 * 60 * 60 * 1000 // 12 hours
       }
 
       localStorage.setItem('user', JSON.stringify(user.value));
@@ -61,6 +61,10 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user');
     window.location.href = '/login'
   };
+
+  const isAuthenticated = computed(() => {
+    return user.value && user.value.token && user.value.till > Date.now();
+  });
 
   return {
     user,

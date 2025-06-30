@@ -2,8 +2,7 @@
 import { useFerzlStore } from '@/stores/ferzl.store'
 import FerzlSearchForm from '@/components/FerzlSearchForm.vue'
 
-const ferzlStore = useFerzlStore();
-
+const ferzlStore = useFerzlStore()
 </script>
 
 <template>
@@ -13,7 +12,10 @@ const ferzlStore = useFerzlStore();
       <FerzlSearchForm />
     </div>
     <div class="container-fluid">
-      <table class="table table-hover">
+      <div v-if="!ferzlStore.searchResults || ferzlStore.searchResults.length == 0">
+        <p class="text-center my-2 text-muted small">Задайте параметры поиска</p>
+      </div>
+      <table class="table table-hover" v-else>
         <thead>
           <tr>
             <th>№</th>
@@ -30,14 +32,15 @@ const ferzlStore = useFerzlStore();
             <td>{{ index + 1 }}</td>
             <td>{{ person.oip }}</td>
             <td>{{ person.fio }}</td>
-            <td>{{ new Date(person.birthDay).toLocaleDateString("ru-RU") }}</td>
+            <td>{{ new Date(person.birthDay).toLocaleDateString('ru-RU') }}</td>
             <td>{{ person.enp }}</td>
             <td>{{ person.gender === 1 ? 'М' : 'Ж' }}</td>
             <td>
               <button
                 class="btn btn-link p-0"
                 :disabled="ferzlStore.isLoading2"
-                @click.prevent="ferzlStore.searchOip(person.oip)">
+                @click.prevent="ferzlStore.searchOip(person.oip)"
+              >
                 Подробнее
               </button>
             </td>

@@ -11,7 +11,7 @@ const auth = useAuthStore()
 </script>
 
 <template>
-  <header v-if="auth.isAuthenticated" class="border-bottom bg-body-tertiary">
+  <header v-if="auth.isAuthenticated" class="border-bottom bg-body-tertiary mb-2">
     <nav class="navbar navbar-expand-lg py-1">
       <div class="container-fluid">
         <RouterLink class="navbar-brand" to="/">

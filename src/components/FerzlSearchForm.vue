@@ -3,6 +3,8 @@ import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, maxLength } from '@vuelidate/validators'
 import { useFerzlStore } from '@/stores/ferzl.store'
+import { DEFAULT_OKATO } from '@/../environment'
+import { F011 } from '@/nsi/f011'
 
 import EraserIcon from '@/components/icons/EraserIcon.vue'
 
@@ -176,8 +178,15 @@ const onSubmit = async () => {
       <label for="doc_t" class="d-none"></label>
       <select id="doc_t" class="form-select" v-model="form.doc_t" :disabled="form.oip_selected">
         <option value="0">Выбрать документ</option>
-        <option value="14">14 - Паспорт гражданина РФ</option>
-        <option value="3">3 - Свидетельство о рождении, выданное в РФ</option>
+        <option value="14">14 - {{ F011[14] }}</option>
+        <option value="3">3 - {{ F011[3] }}</option>
+        <option
+          v-for="n in Object.keys(F011).filter((n) => n != 3 && n != 14)"
+          value="{{ n }}"
+          :key="n"
+        >
+          {{ n }} - {{ F011[n] }}
+        </option>
       </select>
     </div>
 
@@ -313,7 +322,7 @@ const onSubmit = async () => {
           id="okato"
           type="text"
           class="form-control"
-          placeholder="25000"
+          :placeholder="DEFAULT_OKATO"
           @input="onInputOkato"
           :value="form.okato"
           :disabled="form.oip_selected"

@@ -4,7 +4,7 @@ import useVuelidate from '@vuelidate/core'
 import { helpers, maxLength } from '@vuelidate/validators'
 import { useFerzlStore } from '@/stores/ferzl.store'
 import { DEFAULT_OKATO } from '@/../environment'
-import { F011 } from '@/nsi/f011'
+import { F011, f011DocName } from '@/nsi/f011'
 
 import EraserIcon from '@/components/icons/EraserIcon.vue'
 
@@ -178,14 +178,14 @@ const onSubmit = async () => {
       <label for="doc_t" class="d-none"></label>
       <select id="doc_t" class="form-select" v-model="form.doc_t" :disabled="form.oip_selected">
         <option value="0">Выбрать документ</option>
-        <option value="14">14 - {{ F011[14] }}</option>
-        <option value="3">3 - {{ F011[3] }}</option>
+        <option value="14">14 - {{ f011DocName('14') }}</option>
+        <option value="3">3 - {{ f011DocName('3') }}</option>
         <option
-          v-for="n in Object.keys(F011).filter((n) => n != 3 && n != 14)"
+          v-for="n in Object.values(F011).map(n => n.type).filter((n) => n != '3' && n != '14')"
           value="{{ n }}"
           :key="n"
         >
-          {{ n }} - {{ F011[n] }}
+          {{ n }} - {{ f011DocName(n) }}
         </option>
       </select>
     </div>

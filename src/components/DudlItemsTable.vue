@@ -1,0 +1,32 @@
+<script setup lang="ts">
+import { defineProps } from 'vue'
+import type { DudlItem } from '@/types/PersonData'
+import { f011DocName } from '@/nsi/f011'
+import { formatDate } from '@/utils'
+
+defineProps({
+  dudlItems: {
+    type: Object as () => DudlItem[],
+  },
+})
+</script>
+
+<template>
+  <table class="table table-hover table-sm small">
+    <thead>
+      <tr>
+        <th colspan="4">Документы</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(d, index) in dudlItems" :key="index" role="button">
+        <td :title="f011DocName(d.dudlType)">{{ d.dudlType }}</td>
+        <td title="Серия и номер">{{ d.dudlSer }} № {{ d.dudlNum }}</td>
+        <td title="Дата выдачи">{{ formatDate(d.dudlDateB) }}</td>
+        <td class="text-end">
+          <span class="text-success" v-if="d.dudlStatus.match(/^Д/)" title="Действителен"> Д </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</template>

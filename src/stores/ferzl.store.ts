@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useToastsStore } from '@/stores'
 import { API_URL, BEARER_TOKEN } from '@/../environment';
+import type PersonData from '@/types/PersonData';
 
 export interface SearchParams {
   enp: string | null
@@ -12,7 +13,7 @@ export interface SearchParams {
 export interface PersonDataShort {
   fio: string
   enp: string
-  birthDay: Date
+  birthDay: number
   gender: number
   oip: string
 }
@@ -33,14 +34,16 @@ const convertParams = (params: SearchParams) => {
 
 export const useFerzlStore = defineStore('ferzl', () => {
   const personList = ref<PersonDataShort[]>([]);
-  const personData = ref<PersonDataFull | null>(null);
+  const personData = ref<PersonData | null>(null);
   const isLoading = ref(false);
   const isLoading2 = ref(false);
 
   const searchCriteria = async (params: SearchParams) => {
     try {
-      isLoading.value = true
-      personList.value = []
+      isLoading.value = true;
+      isLoading2.value = false;
+      personData.value = null;
+      personList.value = [];
 
       const response = await fetch(API_URL + '/search-criteria', {
         method: 'POST',
@@ -95,8 +98,6 @@ export const useFerzlStore = defineStore('ferzl', () => {
       }
 
       personData.value = data;
-
-      console.log(personData.value?.dudl)
 
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Ошибка поиска';

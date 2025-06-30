@@ -1,4 +1,4 @@
-export interface PersonData {
+export default interface PersonData {
   oip: string;
   person: {
     personItems: PersonItem[];
@@ -15,7 +15,9 @@ export interface PersonData {
   attach: {
     attachItems: AttachItem[];
   };
-  contact: null;
+  contact: {
+    contactItems: ContactItem[];
+  };
   snils: {
     snilsItems: SnilsItem[];
   };
@@ -137,6 +139,15 @@ export interface AttachItem {
   attachStatus: string;
   depId: string | null;
   mcapitation: string | null;
+}
+
+export interface ContactItem {
+  contactStatus: string
+  contactText: string
+  contactType: string | null
+  descr: string | null
+  dsource: string
+  dsourceType: string
 }
 
 export interface SnilsItem {

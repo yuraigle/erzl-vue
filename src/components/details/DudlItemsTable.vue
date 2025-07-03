@@ -5,8 +5,10 @@ import { f011DocName } from '@/nsi/f011'
 import { formatDate } from '@/utils'
 
 defineProps({
-  dudlItems: {
-    type: Object as () => DudlItem[],
+  dudl: {
+    type: Object as () => {
+      dudlItems: DudlItem[]
+    },
   },
 })
 </script>
@@ -18,14 +20,19 @@ defineProps({
         <th colspan="4">Документы</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(d, index) in dudlItems" :key="index" role="button">
+    <tbody v-if="dudl?.dudlItems">
+      <tr v-for="(d, index) in dudl.dudlItems" :key="index" role="button">
         <td :title="f011DocName(d.dudlType)">{{ d.dudlType }}</td>
         <td title="Серия и номер">{{ d.dudlSer }} № {{ d.dudlNum }}</td>
         <td title="Дата выдачи">{{ formatDate(d.dudlDateB) }}</td>
         <td class="text-end">
           <span class="text-success" v-if="d.dudlStatus.match(/^Д/)" title="Действителен"> Д </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="4" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

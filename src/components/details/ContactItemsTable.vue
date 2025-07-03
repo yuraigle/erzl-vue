@@ -3,8 +3,10 @@ import { defineProps } from 'vue'
 import type { ContactItem } from '@/types/PersonData'
 
 defineProps({
-  contactItems: {
-    type: Object as () => ContactItem[],
+  contact: {
+    type: Object as () => {
+      contactItems: ContactItem[]
+    },
   },
 })
 </script>
@@ -16,8 +18,8 @@ defineProps({
         <th colspan="3">Контакты</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(c, index) in contactItems" :key="index" role="button">
+    <tbody v-if="contact">
+      <tr v-for="(c, index) in contact.contactItems" :key="index" role="button">
         <td>{{ c.contactType }}</td>
         <td>{{ c.contactText }}</td>
         <td class="text-end">
@@ -25,6 +27,11 @@ defineProps({
             Д
           </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="3" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

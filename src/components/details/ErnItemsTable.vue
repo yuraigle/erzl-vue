@@ -3,8 +3,10 @@ import { defineProps } from 'vue'
 import type { ErnItem } from '@/types/PersonData'
 
 defineProps({
-  ernItems: {
-    type: Object as () => ErnItem[],
+  ern: {
+    type: Object as () => {
+      ernItems: ErnItem[]
+    },
   },
 })
 </script>
@@ -16,12 +18,17 @@ defineProps({
         <th colspan="2">ЕРН</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(e, index) in ernItems" :key="index" role="button">
+    <tbody v-if="ern?.ernItems">
+      <tr v-for="(e, index) in ern.ernItems" :key="index" role="button">
         <td>{{ e.ern }}</td>
         <td class="text-end">
           <span class="text-success" v-if="e.ernStatus.match(/^Д/)" title="Действителен"> Д </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="2" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

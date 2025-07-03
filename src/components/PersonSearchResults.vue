@@ -9,7 +9,7 @@ const ferzlStore = useFerzlStore()
   <div v-if="!ferzlStore.personList || ferzlStore.personList.length == 0">
     <p class="text-center my-2 text-muted small">Задайте параметры поиска</p>
   </div>
-  <table class="table table-hover">
+  <table v-else class="table table-hover">
     <thead>
       <tr>
         <th>№</th>

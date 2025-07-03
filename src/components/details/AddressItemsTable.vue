@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 import type { AddressItem } from '@/types/PersonData'
-import { formatDate, compareByStr } from '@/utils';
+import { formatDate, compareByStr } from '@/utils'
 
 defineProps({
-  addressItems: {
-    type: Object as () => AddressItem[],
+  address: {
+    type: Object as () => {
+      addressItems: AddressItem[]
+    },
   },
 })
 
@@ -29,13 +31,13 @@ const itemsOrder = (items?: AddressItem[]): AddressItem[] => {
 const addressTypeName = (type: string): string => {
   switch (type) {
     case '1':
-      return 'регистрации';
+      return 'регистрации'
     case '2':
-      return 'пребывания';
+      return 'пребывания'
     case '3':
-      return 'проживания';
+      return 'проживания'
     default:
-      return '';
+      return ''
   }
 }
 </script>
@@ -44,13 +46,16 @@ const addressTypeName = (type: string): string => {
   <table class="table table-hover table-sm small">
     <thead>
       <tr>
-        <th colspan="4">Адреса</th>
+        <th colspan="5">Адреса</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(a, index) in itemsOrder(addressItems)" :key="index" role="button">
-        <td>{{ a.addressType }} - {{  addressTypeName(a.addressType) }}</td>
-        <td :title="a.addressText">{{ a.okato }}</td>
+    <tbody v-if="address?.addressItems">
+      <tr v-for="(a, index) in itemsOrder(address.addressItems)" :key="index" role="button">
+        <td>{{ a.addressType }} - {{ addressTypeName(a.addressType) }}</td>
+        <td>{{ a.okato }}</td>
+        <td>
+          <small class="badge text-info" v-if="a.addressText" :title="a.addressText">*</small>
+        </td>
         <td>
           {{ formatDate(a.addressDateB) }}
           &mdash;
@@ -61,6 +66,11 @@ const addressTypeName = (type: string): string => {
             Д
           </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="5" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

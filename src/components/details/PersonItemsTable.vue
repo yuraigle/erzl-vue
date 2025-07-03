@@ -4,8 +4,10 @@ import type { PersonItem } from '@/types/PersonData'
 import { formatDate, compareByStr } from '@/utils'
 
 defineProps({
-  personItems: {
-    type: Object as () => PersonItem[],
+  person: {
+    type: Object as () => {
+      personItems: PersonItem[]
+    },
   },
 })
 
@@ -21,7 +23,6 @@ const itemsOrder = (items?: PersonItem[]): PersonItem[] => {
     return b.dateEdit - a.dateEdit // then by date
   })
 }
-
 </script>
 
 <template>
@@ -31,15 +32,22 @@ const itemsOrder = (items?: PersonItem[]): PersonItem[] => {
         <th colspan="4">Персональные данные</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(p, index) in itemsOrder(personItems)" :key="index" role="button">
+    <tbody v-if="person?.personItems">
+      <tr v-for="(p, index) in itemsOrder(person.personItems)" :key="index" role="button">
         <td>{{ p.surname }} {{ p.firstName }} {{ p.patronymic }}</td>
         <td>{{ p.gender === 1 ? 'М' : 'Ж' }}</td>
         <td title="Дата рождения">{{ formatDate(p.birthDay) }}</td>
         <td class="text-end">
-          <span class="text-danger" v-if="p.deathDate" :title="'Смерть ' + formatDate(p.deathDate)"> С </span>
+          <span class="text-danger" v-if="p.deathDate" :title="'Смерть ' + formatDate(p.deathDate)">
+            С
+          </span>
           <span class="text-success" v-if="p.status.match(/^Д/)" title="Действителен"> Д </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="4" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

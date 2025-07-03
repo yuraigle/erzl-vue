@@ -4,8 +4,10 @@ import type { AttachItem } from '@/types/PersonData'
 import { compareByStr, formatDate } from '@/utils'
 
 defineProps({
-  attachItems: {
-    type: Object as () => AttachItem[],
+  attach: {
+    type: Object as () => {
+      attachItems: AttachItem[]
+    },
   },
 })
 
@@ -39,8 +41,8 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
         <th colspan="4">Прикрепления</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(a, index) in itemsOrder(attachItems)" :key="index" role="button">
+    <tbody v-if="attach?.attachItems">
+      <tr v-for="(a, index) in itemsOrder(attach.attachItems)" :key="index" role="button">
         <td>{{ a.moCode }}</td>
         <td>{{ a.areaType }}. {{ areaTypeName(a.areaType) }}</td>
         <td>
@@ -53,6 +55,11 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
             Д
           </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="4" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

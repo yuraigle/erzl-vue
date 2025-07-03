@@ -4,8 +4,10 @@ import type { PolicyItem } from '@/types/PersonData'
 import { compareByStr, formatDate } from '@/utils'
 
 defineProps({
-  policyItems: {
-    type: Object as () => PolicyItem[],
+  policy: {
+    type: Object as () => {
+      policyItems: PolicyItem[]
+    },
   },
 })
 
@@ -31,8 +33,8 @@ const itemsOrder = (items?: PolicyItem[]): PolicyItem[] => {
         <th colspan="5">Страхования</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(p, index) in itemsOrder(policyItems)" :key="index" role="button">
+    <tbody v-if="policy?.policyItems">
+      <tr v-for="(p, index) in itemsOrder(policy.policyItems)" :key="index" role="button">
         <td>
           <span v-if="p.insurfCode && p.insurfCode != '0'" :title="p.insurfName">
             {{ p.insurfCode }}
@@ -48,6 +50,11 @@ const itemsOrder = (items?: PolicyItem[]): PolicyItem[] => {
         <td class="text-end">
           <span class="text-success" v-if="p.pcyStatus.match(/^Д/)" title="Действителен"> Д </span>
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="5" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

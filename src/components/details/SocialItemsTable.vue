@@ -4,8 +4,10 @@ import type { SocialStatusItem } from '@/types/PersonData'
 import { formatDate } from '@/utils'
 
 defineProps({
-  socialItems: {
-    type: Object as () => SocialStatusItem[],
+  social: {
+    type: Object as () => {
+      socialStatusItems: SocialStatusItem[]
+    },
   },
 })
 
@@ -37,12 +39,17 @@ const socialStatusName = (socialStatus: string): string => {
         <th colspan="2">Социальный статус</th>
       </tr>
     </thead>
-    <tbody>
-      <tr v-for="(s, index) in itemsOrder(socialItems)" :key="index" role="button">
+    <tbody v-if="social?.socialStatusItems">
+      <tr v-for="(s, index) in itemsOrder(social.socialStatusItems)" :key="index" role="button">
         <td>{{ s.socialStatus }} - {{ socialStatusName(s.socialStatus) }}</td>
         <td class="text-end">
           {{ formatDate(s.regDate) }}
         </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="2" class="text-center text-muted">Нет данных</td>
       </tr>
     </tbody>
   </table>

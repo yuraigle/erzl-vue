@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import type { AddressItem } from '@/types/PersonData'
 import { formatDate, compareByStr } from '@/utils'
 

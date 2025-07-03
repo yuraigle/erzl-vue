@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import type { DudlItem } from '@/types/PersonData'
 import { f011DocName } from '@/nsi/f011'
 import { formatDate } from '@/utils'

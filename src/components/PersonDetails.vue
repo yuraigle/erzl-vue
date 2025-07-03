@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import type PersonData from '@/types/PersonData'
 import PersonItemsTable from './details/PersonItemsTable.vue'
 import DudlItemsTable from './details/DudlItemsTable.vue'
@@ -22,21 +21,23 @@ defineProps({
 <template>
   <h5>Подробная информация</h5>
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-4">
+    <div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3">
+      <div class="col">
         <PersonItemsTable :person="pd.person" />
         <ContactItemsTable :contact="pd.contact" />
         <AddressItemsTable :address="pd.address" />
       </div>
-      <div class="col-4">
+      <div class="col">
         <DudlItemsTable :dudl="pd.dudl" />
         <SnilsItemsTable :snils="pd.snils" />
-        <SocialItemsTable :social="pd.socialStatus" />
-        <ErnItemsTable :ern="pd.ern" />
       </div>
-      <div class="col-4">
+      <div class="col">
         <PolicyItemsTable :policy="pd.policy" />
         <AttachItemsTable :attach="pd.attach" />
+      </div>
+      <div class="col">
+        <SocialItemsTable :social="pd.socialStatus" />
+        <ErnItemsTable :ern="pd.ern" />
       </div>
     </div>
   </div>

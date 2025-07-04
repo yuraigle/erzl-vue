@@ -51,7 +51,8 @@ const formatGender = (n: string): string => {
 }
 
 const formatDudlType = (n: string): string => {
-  return n + '. ' + f011DocName(n);
+  const name = f011DocName(n)
+  return name ? n + '. ' + f011DocName(n) : n;
 }
 
 const formatAddressType =  (n: string): string => {

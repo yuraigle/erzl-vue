@@ -8,6 +8,8 @@ defineProps({
     },
   },
 })
+
+defineEmits(['details'])
 </script>
 
 <template>
@@ -18,7 +20,7 @@ defineProps({
       </tr>
     </thead>
     <tbody v-if="ern?.ernItems">
-      <tr v-for="(e, index) in ern.ernItems" :key="index" role="button">
+      <tr v-for="(e, index) in ern.ernItems" :key="index" role="button" @click="$emit('details', e)">
         <td>{{ e.ern }}</td>
         <td class="text-end">
           <span class="text-success" v-if="e.ernStatus.match(/^Д/)" title="Действителен"> Д </span>

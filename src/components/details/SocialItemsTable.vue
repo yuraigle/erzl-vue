@@ -10,6 +10,8 @@ defineProps({
   },
 })
 
+defineEmits(['details'])
+
 const itemsOrder = (items?: SocialStatusItem[]): SocialStatusItem[] => {
   if (!items) return []
 
@@ -39,7 +41,12 @@ const socialStatusName = (socialStatus: string): string => {
       </tr>
     </thead>
     <tbody v-if="social?.socialStatusItems">
-      <tr v-for="(s, index) in itemsOrder(social.socialStatusItems)" :key="index" role="button">
+      <tr
+        v-for="(s, index) in itemsOrder(social.socialStatusItems)"
+        :key="index"
+        role="button"
+        @click="$emit('details', s)"
+      >
         <td>{{ s.socialStatus }} - {{ socialStatusName(s.socialStatus) }}</td>
         <td class="text-end">
           {{ formatDate(s.regDate) }}

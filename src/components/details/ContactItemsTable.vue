@@ -8,6 +8,8 @@ defineProps({
     },
   },
 })
+
+defineEmits(['details'])
 </script>
 
 <template>
@@ -18,7 +20,12 @@ defineProps({
       </tr>
     </thead>
     <tbody v-if="contact">
-      <tr v-for="(c, index) in contact.contactItems" :key="index" role="button">
+      <tr
+        v-for="(c, index) in contact.contactItems"
+        :key="index"
+        role="button"
+        @click="$emit('details', c)"
+      >
         <td>{{ c.contactType }}</td>
         <td>{{ c.contactText }}</td>
         <td class="text-end">

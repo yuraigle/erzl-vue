@@ -10,6 +10,8 @@ defineProps({
   },
 })
 
+defineEmits(['details'])
+
 const itemsOrder = (items?: PolicyItem[]): PolicyItem[] => {
   if (!items) return []
 
@@ -33,7 +35,12 @@ const itemsOrder = (items?: PolicyItem[]): PolicyItem[] => {
       </tr>
     </thead>
     <tbody v-if="policy?.policyItems">
-      <tr v-for="(p, index) in itemsOrder(policy.policyItems)" :key="index" role="button">
+      <tr
+        v-for="(p, index) in itemsOrder(policy.policyItems)"
+        :key="index"
+        role="button"
+        @click="$emit('details', p)"
+      >
         <td>
           <span v-if="p.insurfCode && p.insurfCode != '0'" :title="p.insurfName">
             {{ p.insurfCode }}

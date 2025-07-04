@@ -10,6 +10,8 @@ defineProps({
   },
 })
 
+defineEmits(['details'])
+
 const itemsOrder = (items?: AddressItem[]): AddressItem[] => {
   if (!items) return []
   return items.sort((a, b) => {
@@ -49,7 +51,12 @@ const addressTypeName = (type: string): string => {
       </tr>
     </thead>
     <tbody v-if="address?.addressItems">
-      <tr v-for="(a, index) in itemsOrder(address.addressItems)" :key="index" role="button">
+      <tr
+        v-for="(a, index) in itemsOrder(address.addressItems)"
+        :key="index"
+        role="button"
+        @click="$emit('details', a)"
+      >
         <td>{{ a.addressType }} - {{ addressTypeName(a.addressType) }}</td>
         <td>{{ a.okato }}</td>
         <td>

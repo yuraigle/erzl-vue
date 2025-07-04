@@ -10,6 +10,8 @@ defineProps({
   },
 })
 
+defineEmits(['details'])
+
 const itemsOrder = (items?: PersonItem[]): PersonItem[] => {
   if (!items) return []
   return items.sort((a, b) => {
@@ -32,7 +34,12 @@ const itemsOrder = (items?: PersonItem[]): PersonItem[] => {
       </tr>
     </thead>
     <tbody v-if="person?.personItems">
-      <tr v-for="(p, index) in itemsOrder(person.personItems)" :key="index" role="button">
+      <tr
+        v-for="(p, index) in itemsOrder(person.personItems)"
+        :key="index"
+        role="button"
+        @click="$emit('details', p)"
+      >
         <td>{{ p.surname }} {{ p.firstName }} {{ p.patronymic }}</td>
         <td>{{ p.gender === 1 ? 'М' : 'Ж' }}</td>
         <td title="Дата рождения">{{ formatDate(p.birthDay) }}</td>

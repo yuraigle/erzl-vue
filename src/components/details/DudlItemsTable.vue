@@ -10,6 +10,8 @@ defineProps({
     },
   },
 })
+
+defineEmits(['details'])
 </script>
 
 <template>
@@ -20,7 +22,7 @@ defineProps({
       </tr>
     </thead>
     <tbody v-if="dudl?.dudlItems">
-      <tr v-for="(d, index) in dudl.dudlItems" :key="index" role="button">
+      <tr v-for="(d, index) in dudl.dudlItems" :key="index" role="button" @click="$emit('details', d)">
         <td :title="f011DocName(d.dudlType)">{{ d.dudlType }}</td>
         <td title="Серия и номер">{{ d.dudlSer }} № {{ d.dudlNum }}</td>
         <td title="Дата выдачи">{{ formatDate(d.dudlDateB) }}</td>

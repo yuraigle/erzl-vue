@@ -10,6 +10,8 @@ defineProps({
   },
 })
 
+defineEmits(['details'])
+
 const areaTypeName = (type: string): string => {
   const n = parseInt(type)
   return ['Терапевт', 'ЖК', 'Стом.', 'СМП', 'ФАП'][n - 1]
@@ -41,7 +43,12 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
       </tr>
     </thead>
     <tbody v-if="attach?.attachItems">
-      <tr v-for="(a, index) in itemsOrder(attach.attachItems)" :key="index" role="button">
+      <tr
+        v-for="(a, index) in itemsOrder(attach.attachItems)"
+        :key="index"
+        role="button"
+        @click="$emit('details', a)"
+      >
         <td>{{ a.moCode }}</td>
         <td>{{ a.areaType }}. {{ areaTypeName(a.areaType) }}</td>
         <td>

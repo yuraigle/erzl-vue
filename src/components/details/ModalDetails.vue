@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { formatDate, formatDateTime } from '@/utils'
+import { formatDate, formatDateTime, ucFirst } from '@/utils'
 import { getMpiFiltered } from '@/nsi/mpi'
+import { f011DocName } from '@/nsi/f011'
 
 const props = defineProps({
   obj: {
@@ -16,25 +17,65 @@ const mpiFormatName = (key: string) => {
   return mpi1.has(key) ? ucFirst(mpi1.get(key)?.split('|')[4]).trim() : key
 }
 
-const mpiFormatValue = (value: any, key: string) => {
+const mpiFormatValue = (v: any, key: string) => {
   const mpi1 = getMpiFiltered(props.type || '')
-  const format = mpi1.has(key) ? mpi1.get(key)?.split('|')[5] : 'string'
+  if (!mpi1.has(key)) {
+    return v ? v.toString() : ''
+  }
+
+  const parts = mpi1.get(key)?.split('|') || []
+  const id = parts[0] || ''
+  const format = parts[5] || 'string'
+
+  if (key === 'gender') return formatGender(v.toString())
+  if (id === '3.4.1.5.' && v) return formatDudlType(v.toString())
+  if (id === '3.5.1.10.' && v) return formatAddressType(v.toString())
+  if (id === '3.6.1.1.') return formatAreaType(v.toString())
+  if (id === '3.6.1.3.') return formatAttachMethod(v.toString())
+  if (id === '3.9.1.1.') return formatSocialStatus(v.toString())
+
   if (format === 'date') {
-    return formatDate(value)
+    return formatDate(v)
   } else if (format === 'dateTime') {
-    return formatDateTime(value)
+    return formatDateTime(v)
   } else if (format === 'boolean') {
-    return value === undefined ? '' : value ? 'Да' : 'Нет'
+    return v === undefined ? '' : v ? 'Да' : 'Нет'
   } else {
-    return value ? value.toString() : ''
+    return v ? v.toString() : ''
   }
 }
 
-const ucFirst = (str?: string): string => {
-  if (typeof str !== 'string' || str.length === 0) {
-    return ''
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1)
+const formatGender = (n: string): string => {
+  const dict = ['Неизвестен', 'Мужской', 'Женский']
+  return n + '. ' + dict[parseInt(n)]
+}
+
+const formatDudlType = (n: string): string => {
+  return n + '. ' + f011DocName(n);
+}
+
+const formatAddressType =  (n: string): string => {
+  const dict = [
+    'Адрес регистрации по месту жительства',
+    'Адрес по месту пребывания (временной регистрации)',
+    'Адрес фактического проживания (пребывания)'
+  ]
+  return n + '. ' + dict[parseInt(n) - 1]
+}
+
+const formatAreaType = (n: string): string => {
+  const dict = ['Терапевт', 'ЖК', 'Стом.', 'СМП', 'ФАП']
+  return n + '. ' + dict[parseInt(n) - 1]
+}
+
+const formatAttachMethod = (n: string): string => {
+  const dict = ['по месту регистрации', 'по личному заявлению', 'по заявлению в электронном виде']
+  return n + '. ' + dict[parseInt(n) - 1]
+}
+
+const formatSocialStatus = (n: string): string => {
+  const dict = ['Работающий', 'Неработающий']
+  return n + '. ' + dict[parseInt(n)]
 }
 </script>
 

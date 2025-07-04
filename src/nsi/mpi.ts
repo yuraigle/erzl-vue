@@ -4,8 +4,8 @@ export const mpi = `
 3.2.1.2.||surname|О|фамилия|string|
 3.2.1.3.||patronymic|Н|отчество|string|
 3.2.1.4.||birthDay|О|дата рождения|date|
-3.2.1.5.||gender|О|Пол|integer|
-3.2.1.6.||birthOksm|Н|Справочник страна рождения|string|O001
+3.2.1.5.||gender|О|Половая принадлежность|integer|
+3.2.1.6.||birthOksm|Н|Cтрана рождения|string|O001
 3.2.1.7.||deathDate|Н|Дата смерти|date|
 3.2.1.8.||whenMerged|О|Дата и время объединения с дубликатом|dateTime|
 3.2.1.9.||status|О|Статус персоны|string|
@@ -81,7 +81,7 @@ export const mpi = `
 3.5.1.7.||appNum|Н|Номер квартиры при наличии кодов ГАР|string|
 3.5.1.8.||dsourceType|О|вид источника данных|string|
 3.5.1.9.||dsource|О|источник данных|string|
-3.5.1.10.||addressType|О|Тип адреса. Возможны следующие значения:
+3.5.1.10.||addressType|О|Тип адреса|string|
 3.5.1.11.||addressDateB|О|дата начало действия адреса|date|
 3.5.1.12.||addressDateE|Н|дата конца действия адреса|date|
 3.5.1.13.||addressStatus|О|статус адреса|string|
@@ -100,7 +100,7 @@ export const mpi = `
 3.6.1.11.||doctorId|Н|ИД участкового врача МО|string|
 3.6.1.12.||doctorSince|Н|Фактическая дата прикрепления к врачу|date|
 3.6.1.13.||descr|Н|Описание|string|
-3.6.1.14.||moOkato|О|ОКАТО территории медицинской организации, к которой происходит прикрепление|string|
+3.6.1.14.||moOkato|О|ОКАТО территории медицинской организации|string|
 3.6.1.15.||attachStatus|О|Статус прикрепления|string|
 3.6.1.16.||dsource|О|источник данных|string|
 3.6.1.17.||dsourceType|О|вид источника данных|string|
@@ -122,7 +122,7 @@ export const mpi = `
 3.8.1.5.||statusSnils|О|Cтатус СНИЛС|string|
 
 # Параметры ответа для Show = SocialStatus
-3.9.1.1.||socialStatus|О|статус (0-Работающий/1-Неработающий)|string|
+3.9.1.1.||socialStatus|О|статус|string|
 3.9.1.2.||dsourceType|О|вид источника данных|string|
 3.9.1.3.||dsource|О|источник данных|string|
 3.9.1.4.||descr|Н|Описание|string|

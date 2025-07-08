@@ -9,12 +9,12 @@ const ferzlStore = useFerzlStore()
 
 <template>
   <div class="d-flex">
-    <div class="search-container border-end px-3 flex-shrink-0">
+    <div class="search-container border-end px-3 py-0 flex-shrink-0">
       <h5 class="my-4">Параметры поиска</h5>
       <FerzlSearchForm />
     </div>
     <div class="container-fluid">
-      <PersonSearchResults />
+      <PersonSearchResults v-if="ferzlStore.personList && ferzlStore.personList.length > 0" />
       <PersonDetails v-if="ferzlStore.personData !== null" :pd="ferzlStore.personData" />
     </div>
   </div>

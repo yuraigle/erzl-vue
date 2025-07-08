@@ -1,4 +1,4 @@
-export default interface PersonData {
+export interface PersonData {
   oip: string;
   person: {
     personItems: PersonItem[];
@@ -27,6 +27,14 @@ export default interface PersonData {
   ern: {
     ernItems: ErnItem[];
   };
+}
+
+export interface PersonDataShort {
+  fio: string
+  enp: string
+  birthDay: number
+  gender: number
+  oip: string
 }
 
 export interface PersonItem {

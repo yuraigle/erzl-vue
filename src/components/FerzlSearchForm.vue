@@ -19,9 +19,10 @@ const form = reactive({
   ot: '',
   dr_from: '',
   dr_to: '',
-  okato: '',
+  okato: DEFAULT_OKATO,
   oip: '',
   oip_selected: false,
+  page: 1,
 })
 
 const validations = {
@@ -116,9 +117,10 @@ const clearForm = () => {
   form.ot = ''
   form.dr_from = ''
   form.dr_to = ''
-  form.okato = ''
+  form.okato = DEFAULT_OKATO
   form.oip = ''
   form.oip_selected = false
+  form.page = 1
 }
 
 const ferzl = useFerzlStore()
@@ -181,7 +183,9 @@ const onSubmit = async () => {
         <option value="14">14 - {{ f011DocName('14') }}</option>
         <option value="3">3 - {{ f011DocName('3') }}</option>
         <option
-          v-for="n in Object.values(F011).map(n => n.type).filter((n) => n != '3' && n != '14')"
+          v-for="n in Object.values(F011)
+            .map((n) => n.type)
+            .filter((n) => n != '3' && n != '14')"
           value="{{ n }}"
           :key="n"
         >
@@ -322,7 +326,6 @@ const onSubmit = async () => {
           id="okato"
           type="text"
           class="form-control"
-          :placeholder="DEFAULT_OKATO"
           @input="onInputOkato"
           :value="form.okato"
           :disabled="form.oip_selected"

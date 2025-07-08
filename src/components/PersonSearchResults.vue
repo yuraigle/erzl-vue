@@ -3,13 +3,40 @@ import { useFerzlStore } from '@/stores/ferzl.store'
 import { formatDate } from '@/utils'
 
 const ferzlStore = useFerzlStore()
+
+const pagesCount = () => {
+  const items = ferzlStore.pagination?.count
+  const itemsPerPage = ferzlStore.pagination?.itemPerPage
+
+  if (!items || !itemsPerPage) {
+    return 0
+  }
+
+  return Math.ceil(items / itemsPerPage)
+}
+
+const hasPagination = (): boolean => {
+  return ferzlStore.pagination != null && pagesCount() > 1
+}
+
+const setPage = (n: number) => {
+  ferzlStore.searchCriteriaPage(n)
+}
+
+const itemsStartIndex = () => {
+  if (ferzlStore.pagination) {
+    return ferzlStore.pagination.itemPerPage * (ferzlStore.pagination.pageNumber - 1);
+  }
+  return 0;
+}
 </script>
 
 <template>
-  <div v-if="!ferzlStore.personList || ferzlStore.personList.length == 0">
-    <p class="text-center my-2 text-muted small">Задайте параметры поиска</p>
-  </div>
-  <table v-else class="table table-hover">
+  <h5 class="mt-4">
+    Найденные персоны ({{ ferzlStore.pagination?.count }})
+  </h5>
+
+  <table class="table table-hover">
     <thead>
       <tr>
         <th>№</th>
@@ -23,7 +50,7 @@ const ferzlStore = useFerzlStore()
     </thead>
     <tbody>
       <tr v-for="(person, index) in ferzlStore.personList" :key="person.oip">
-        <td>{{ index + 1 }}</td>
+        <td>{{ itemsStartIndex() + index + 1 }}</td>
         <td>{{ person.oip }}</td>
         <td>{{ person.fio }}</td>
         <td>{{ formatDate(person.birthDay) }}</td>
@@ -41,4 +68,35 @@ const ferzlStore = useFerzlStore()
       </tr>
     </tbody>
   </table>
+
+  <nav v-if="ferzlStore.pagination && hasPagination()">
+    <ul class="pagination">
+      <li class="page-item" :class="{ disabled: ferzlStore.pagination?.pageNumber == 1 }">
+        <button
+          class="page-link"
+          type="button"
+          @click="setPage(ferzlStore.pagination.pageNumber - 1)"
+        >
+          &larr;
+        </button>
+      </li>
+      <li class="page-item disabled">
+        <button class="page-link" type="button">
+          {{ ferzlStore.pagination?.pageNumber }} / {{ pagesCount() }}
+        </button>
+      </li>
+      <li
+        class="page-item"
+        :class="{ disabled: ferzlStore.pagination?.pageNumber == pagesCount() }"
+      >
+        <button
+          class="page-link"
+          type="button"
+          @click="setPage(ferzlStore.pagination.pageNumber + 1)"
+        >
+          &rarr;
+        </button>
+      </li>
+    </ul>
+  </nav>
 </template>

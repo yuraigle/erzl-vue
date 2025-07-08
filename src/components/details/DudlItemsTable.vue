@@ -24,7 +24,7 @@ defineEmits(['details'])
     <tbody v-if="dudl?.dudlItems">
       <tr v-for="(d, index) in dudl.dudlItems" :key="index" role="button" @click="$emit('details', d)">
         <td :title="f011DocName(d.dudlType)">{{ d.dudlType }}</td>
-        <td title="Серия и номер">{{ d.dudlSer }} № {{ d.dudlNum }}</td>
+        <td :title="f011DocName(d.dudlType)">{{ d.dudlSer }} № {{ d.dudlNum }}</td>
         <td title="Дата выдачи">{{ formatDate(d.dudlDateB) }}</td>
         <td class="text-end">
           <span class="text-success" v-if="d.dudlStatus.match(/^Д/)" title="Действителен"> Д </span>

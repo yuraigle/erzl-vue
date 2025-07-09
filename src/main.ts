@@ -1,3 +1,4 @@
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootswatch/dist/sandstone/bootstrap.min.css'
 
 import { createApp } from 'vue'

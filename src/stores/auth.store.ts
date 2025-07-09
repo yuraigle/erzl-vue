@@ -7,7 +7,7 @@ import { API_URL } from '@/../environment';
 export interface User {
   id: string
   name: string
-  role: string
+  role: number
   token: string
   till: number
 }

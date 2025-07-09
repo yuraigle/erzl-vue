@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { DudlItem } from '@/types/PersonData'
-import { f011DocName } from '@/nsi/f011'
 import { formatDate } from '@/utils'
+import { useAuthStore } from '@/stores'
+import { f011DocName } from '@/nsi/f011'
+import PlusIcon from '../icons/PlusIcon.vue'
 
 defineProps({
   dudl: {
@@ -12,13 +14,27 @@ defineProps({
 })
 
 defineEmits(['details'])
+
+const auth = useAuthStore()
 </script>
 
 <template>
   <table class="table table-hover table-sm small">
     <thead>
       <tr>
-        <th colspan="4">Документы</th>
+        <th colspan="4">
+          <div class="d-flex">
+            Документы
+            <button
+              class="btn btn-link p-0 ms-auto"
+              title="Актуализировать данные"
+              @click="() => {}"
+              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+            >
+              <PlusIcon :size="20" />
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody v-if="dudl?.dudlItems">

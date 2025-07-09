@@ -33,7 +33,7 @@ const auth = useAuthStore()
                 Поиск застрахованных
               </RouterLink>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" v-if="false">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                 Данные витрин
               </a>

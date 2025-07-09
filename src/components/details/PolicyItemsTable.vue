@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { PolicyItem } from '@/types/PersonData'
 import { compareByStr, formatDate } from '@/utils'
+import { useAuthStore } from '@/stores'
+import MinusIcon from '../icons/MinusIcon.vue'
 
 defineProps({
   policy: {
@@ -11,6 +13,8 @@ defineProps({
 })
 
 defineEmits(['details'])
+
+const auth = useAuthStore()
 
 const itemsOrder = (items?: PolicyItem[]): PolicyItem[] => {
   if (!items) return []
@@ -31,7 +35,17 @@ const itemsOrder = (items?: PolicyItem[]): PolicyItem[] => {
   <table class="table table-hover table-sm small">
     <thead>
       <tr>
-        <th colspan="5">Страхования</th>
+        <th colspan="5">
+          <div class="d-flex">
+            Страхования
+            <button class="btn btn-link p-0 ms-auto" title="Закрыть страховку"
+              @click="() => {}"
+              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+            >
+              <MinusIcon :size="20" />
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody v-if="policy?.policyItems">

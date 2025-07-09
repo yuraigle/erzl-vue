@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { AttachItem } from '@/types/PersonData'
-import { compareByStr, formatDate } from '@/utils'
+import { formatDate, compareByStr } from '@/utils'
+import { useAuthStore } from '@/stores'
+import PlusIcon from '../icons/PlusIcon.vue'
 
 defineProps({
   attach: {
@@ -11,6 +13,8 @@ defineProps({
 })
 
 defineEmits(['details'])
+
+const auth = useAuthStore()
 
 const areaTypeName = (type: string): string => {
   const n = parseInt(type)
@@ -39,7 +43,17 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
   <table class="table table-hover table-sm small">
     <thead>
       <tr>
-        <th colspan="4">Прикрепления</th>
+        <th colspan="4">
+          <div class="d-flex">
+            Прикрепления
+            <button class="btn btn-link p-0 ms-auto" title="Актуализировать данные"
+              @click="() => {}"
+              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+            >
+              <PlusIcon :size="20" />
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody v-if="attach?.attachItems">

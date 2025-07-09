@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { AddressItem } from '@/types/PersonData'
 import { formatDate, compareByStr } from '@/utils'
+import { useAuthStore } from '@/stores'
+
+import PlusIcon from '../icons/PlusIcon.vue'
 
 defineProps({
   address: {
@@ -11,6 +14,8 @@ defineProps({
 })
 
 defineEmits(['details'])
+
+const auth = useAuthStore()
 
 const itemsOrder = (items?: AddressItem[]): AddressItem[] => {
   if (!items) return []
@@ -47,7 +52,19 @@ const addressTypeName = (type: string): string => {
   <table class="table table-hover table-sm small">
     <thead>
       <tr>
-        <th colspan="5">Адреса</th>
+        <th colspan="5">
+          <div class="d-flex">
+            Адреса
+            <button
+              class="btn btn-link p-0 ms-auto"
+              title="Актуализировать данные"
+              @click="() => {}"
+              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+            >
+              <PlusIcon :size="20" />
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody v-if="address?.addressItems">

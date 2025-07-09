@@ -18,7 +18,7 @@ const ferzlStore = useFerzlStore()
       <tr>
         <th colspan="4">
           <div class="d-flex">
-            <span>Законные представители</span>
+            Законные представители
             <button class="btn btn-link p-0 ms-auto" title="Запросить данные"
               @click="() => ferzlStore.searchLegalRep(oip)"
               :disabled="ferzlStore.isLoadingLegalRep"

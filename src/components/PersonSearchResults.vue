@@ -59,7 +59,7 @@ const itemsStartIndex = () => {
         <td>{{ formatDate(person.birthDay) }}</td>
         <td>{{ person.enp }}</td>
         <td>{{ person.gender === 1 ? 'М' : 'Ж' }}</td>
-        <td>
+        <td class="text-end">
           <button
             class="btn btn-link p-0"
             :disabled="ferzlStore.isLoadingOip"

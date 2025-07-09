@@ -133,6 +133,13 @@ export const mpi = `
 3.10.1.2.||dsourceType|О|вид источника данных|string|
 3.10.1.3.||dsource|О|источник данных|string|
 3.10.1.4.||ernStatus|О|Статус ИД ЕРН|string|
+
+# Параметры ответа LegalRep (сам написал)
+3.20.1.1.||oip|О|ОИП персоны|string|
+3.20.1.2.||legRepType|О|Тип законного представительства|string|
+3.20.1.3.||legRepDateB|О|Дата начала законного представительства|date|
+3.20.1.4.||legRepDateE|О|Плановая дата окончания законного представительства|date|
+3.20.1.5.||status|О|Статус законного представительства|string|
 `
 
 export const getMpiFiltered = (type: string): Map<string, string> => {

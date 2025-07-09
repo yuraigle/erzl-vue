@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { useToastsStore } from '@/stores'
 import { API_URL, BEARER_TOKEN } from '@/../environment';
 import type { PersonData, PersonDataShort } from '@/types/PersonData';
+import type { LegalRepData } from '@/types/LegalRepData';
 
 export interface SearchParams {
   oip_selected: boolean | null
@@ -59,6 +60,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const personList = ref<PersonDataShort[]>([]);
   const pagination = ref<Pagination | null>(null);
   const personData = ref<PersonData | null>(null);
+  const legalRepList = ref<LegalRepData[]>([]);
   const isLoading = ref(false);
   const isLoading2 = ref(false);
   const lastForm = ref<SearchParams | null>(null);
@@ -67,8 +69,9 @@ export const useFerzlStore = defineStore('ferzl', () => {
     try {
       isLoading.value = true;
       isLoading2.value = false;
-      personData.value = null;
       personList.value = [];
+      personData.value = null;
+      legalRepList.value = [];
       pagination.value = null;
       lastForm.value = params;
 
@@ -145,6 +148,27 @@ export const useFerzlStore = defineStore('ferzl', () => {
 
       personData.value = data;
 
+      const response2 = await fetch(API_URL + '/legal-rep', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + BEARER_TOKEN,
+        },
+        body: JSON.stringify({ oip: oip }),
+      })
+        .catch(() => {
+          throw new Error('Ошибка подключения к серверу')
+        });
+
+      const data2 = await response2.json();
+
+      if (!response2.ok) {
+        console.error(data2)
+        return;
+      }
+
+      legalRepList.value = data2
+
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Ошибка поиска';
       useToastsStore().showError(message);
@@ -156,6 +180,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
   return {
     personList,
     personData,
+    legalRepList,
     pagination,
     isLoading,
     isLoading2,

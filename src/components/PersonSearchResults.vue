@@ -33,7 +33,10 @@ const itemsStartIndex = () => {
 
 <template>
   <h5 class="mt-4">
-    Найденные персоны ({{ ferzlStore.pagination?.count }})
+    Найденные персоны
+    <span v-if="ferzlStore.pagination && ferzlStore.pagination.count > 1">
+      ({{ ferzlStore.pagination?.count }})
+    </span>
   </h5>
 
   <table class="table table-hover">

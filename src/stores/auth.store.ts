@@ -2,7 +2,7 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router'
 import { useToastsStore } from '@/stores'
-
+import { API_URL } from '@/../environment';
 
 export interface User {
   id: string
@@ -25,7 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       isLoading.value = true
 
-      const response = await fetch('https://dummyjson.com/auth/login', {
+      const response = await fetch(API_URL + '/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -36,16 +36,16 @@ export const useAuthStore = defineStore('auth', () => {
 
       const data = await response.json()
 
-      if (!data || !data.accessToken) {
+      if (!data || !data.token) {
         const message = data && data.message ? data.message : 'Ошибка авторизации'
         throw new Error(message)
       }
 
       user.value = {
-        id: data.id,
-        name: data.firstName + ' ' + data.lastName,
-        role: 'user',
-        token: data.accessToken,
+        id: data.id || 0,
+        name: data.fio,
+        role: data.role,
+        token: data.token,
         till: Date.now() + 12 * 60 * 60 * 1000 // 12 hours
       }
 

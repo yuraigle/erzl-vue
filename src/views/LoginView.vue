@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.store'
 
-const username = ref('emilys')
-const password = ref('emilyspass')
+const username = ref('')
+const password = ref('')
 const auth = useAuthStore()
 
 const login = () => {
@@ -12,42 +12,42 @@ const login = () => {
 </script>
 
 <template>
-  <div class="w-100 mx-auto mt-5 login-form">
-    <h1 class="h3 text-center">Вход в систему</h1>
+  <div class="w-100 mx-auto mt-auto login-form p-4 card shadow">
     <form>
-      <div class="mb-2">
-        <label for="username" class="form-label"></label>
+      <div class="form-floating mb-2 has-validation">
         <input
           type="text"
-          id="username"
-          autocomplete="username"
-          v-model="username"
           class="form-control"
+          id="username"
           placeholder="Логин"
+          v-model="username"
         />
+        <label for="username">Логин</label>
       </div>
-      <div class="mb-2">
-        <label for="password" class="form-label"></label>
+      <div class="form-floating mb-2 has-validation">
         <input
           type="password"
-          id="password"
-          v-model="password"
           class="form-control"
+          id="password"
           placeholder="Пароль"
+          v-model="password"
         />
+        <label for="password" class="form-label">Пароль</label>
       </div>
 
       <button
-        class="btn btn-primary w-100 mt-2"
+        class="btn btn-lg btn-primary w-100 mt-1"
         :disabled="auth.isLoading"
         @click.prevent="login"
-      >Войти</button>
+      >
+        Войти
+      </button>
     </form>
   </div>
 </template>
 
 <style scoped>
 .login-form {
-  max-width: 400px;
+  max-width: 450px;
 }
 </style>

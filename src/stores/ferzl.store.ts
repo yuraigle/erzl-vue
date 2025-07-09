@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useToastsStore } from '@/stores'
-import { API_URL, BEARER_TOKEN } from '@/../environment';
+import { API_URL } from '@/../environment';
 import type { PersonData, PersonDataShort } from '@/types/PersonData';
 import type { LegalRepData } from '@/types/LegalRepData';
 
@@ -66,6 +66,8 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const isLoadingLegalRep = ref(false);
   const lastForm = ref<SearchParams | null>(null);
 
+  const token = JSON.parse(localStorage.getItem('user') || 'null')['token'];
+
   const searchCriteria = async (params: SearchParams) => {
     try {
       isLoading.value = true;
@@ -86,7 +88,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + BEARER_TOKEN,
+          'Authorization': token,
         },
         body: JSON.stringify(convertParams(params)),
       })
@@ -134,7 +136,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + BEARER_TOKEN,
+          'Authorization': token,
         },
         body: JSON.stringify({ oip: oip }),
       })
@@ -171,7 +173,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + BEARER_TOKEN,
+          'Authorization': token,
         },
         body: JSON.stringify({ oip: oip }),
       })

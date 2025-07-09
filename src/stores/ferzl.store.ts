@@ -62,13 +62,15 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const personData = ref<PersonData | null>(null);
   const legalRepList = ref<LegalRepData[]>([]);
   const isLoading = ref(false);
-  const isLoading2 = ref(false);
+  const isLoadingOip = ref(false);
+  const isLoadingLegalRep = ref(false);
   const lastForm = ref<SearchParams | null>(null);
 
   const searchCriteria = async (params: SearchParams) => {
     try {
       isLoading.value = true;
-      isLoading2.value = false;
+      isLoadingOip.value = false;
+      isLoadingLegalRep.value = false;
       personList.value = [];
       personData.value = null;
       legalRepList.value = [];
@@ -124,8 +126,9 @@ export const useFerzlStore = defineStore('ferzl', () => {
 
   const searchOip = async (oip: string) => {
     try {
-      isLoading2.value = true
+      isLoadingOip.value = true
       personData.value = null;
+      legalRepList.value = [];
 
       const response = await fetch(API_URL + '/person-data', {
         method: 'POST',
@@ -147,8 +150,24 @@ export const useFerzlStore = defineStore('ferzl', () => {
       }
 
       personData.value = data;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Ошибка поиска';
+      useToastsStore().showError(message);
+    } finally {
+      isLoadingOip.value = false
+    }
+  }
 
-      const response2 = await fetch(API_URL + '/legal-rep', {
+  const searchLegalRep = async (oip?: string) => {
+    if (!oip) {
+      return;
+    }
+
+    isLoadingLegalRep.value = true;
+    legalRepList.value = [];
+
+    try {
+      const response = await fetch(API_URL + '/legal-rep', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -160,32 +179,33 @@ export const useFerzlStore = defineStore('ferzl', () => {
           throw new Error('Ошибка подключения к серверу')
         });
 
-      const data2 = await response2.json();
+      const data = await response.json();
 
-      if (!response2.ok) {
-        console.error(data2)
-        return;
+      if (!response.ok) {
+        const message = Array.isArray(data) && data.length > 0 ? data[0] : 'Ошибка запроса';
+        throw new Error(message);
       }
 
-      legalRepList.value = data2
-
+      legalRepList.value = data
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка поиска';
+      const message = err instanceof Error ? err.message : 'Ошибка запроса';
       useToastsStore().showError(message);
     } finally {
-      isLoading2.value = false
+      isLoadingLegalRep.value = false
     }
   }
 
   return {
+    isLoading,
+    isLoadingOip,
+    isLoadingLegalRep,
     personList,
     personData,
     legalRepList,
-    pagination,
-    isLoading,
-    isLoading2,
-    searchOip,
     searchCriteria,
-    searchCriteriaPage
+    searchCriteriaPage,
+    searchOip,
+    searchLegalRep,
+    pagination,
   };
 });

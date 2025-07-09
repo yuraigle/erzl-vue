@@ -43,7 +43,7 @@ const showDetails = (o1: object, type: string) => {
         <PersonItemsTable :person="pd.person" @details="(x) => showDetails(x, '3.2.')" />
         <AddressItemsTable :address="pd.address" @details="(x) => showDetails(x, '3.5.')" />
         <ContactItemsTable :contact="pd.contact" @details="(x) => showDetails(x, '3.7.')" />
-        <LegalRepsTable @details="(x) => showDetails(x, '3.20.')" />
+        <LegalRepsTable :oip="pd.oip" @details="(x) => showDetails(x, '3.20.')" />
       </div>
       <div class="col">
         <DudlItemsTable :dudl="pd.dudl" @details="(x) => showDetails(x, '3.4.')" />

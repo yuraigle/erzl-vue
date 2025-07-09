@@ -62,7 +62,7 @@ const itemsStartIndex = () => {
         <td>
           <button
             class="btn btn-link p-0"
-            :disabled="ferzlStore.isLoading2"
+            :disabled="ferzlStore.isLoadingOip"
             @click.prevent="ferzlStore.searchOip(person.oip)"
           >
             Подробнее

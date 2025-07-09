@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { useFerzlStore } from '@/stores/ferzl.store'
 import { formatDate } from '@/utils'
+import RefreshIcon from '@/components/icons/RefreshIcon.vue'
 
 defineEmits(['details'])
+
+defineProps({
+  oip: String
+})
 
 const ferzlStore = useFerzlStore()
 </script>
@@ -11,7 +16,17 @@ const ferzlStore = useFerzlStore()
   <table class="table table-hover table-sm small">
     <thead>
       <tr>
-        <th colspan="4">Законные представители</th>
+        <th colspan="4">
+          <div class="d-flex">
+            <span>Законные представители</span>
+            <button class="btn btn-link p-0 ms-auto" title="Запросить данные"
+              @click="() => ferzlStore.searchLegalRep(oip)"
+              :disabled="ferzlStore.isLoadingLegalRep"
+            >
+              <RefreshIcon :size="20" />
+            </button>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody v-if="ferzlStore.legalRepList && ferzlStore.legalRepList.length > 0">

@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       user.value = {
         id: data.id || 0,
-        name: data.fio,
+        name: data.name,
         role: data.role,
         token: data.token,
         till: Date.now() + 12 * 60 * 60 * 1000 // 12 hours

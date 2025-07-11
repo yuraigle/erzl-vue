@@ -1,3 +1,3 @@
-export const API_URL = '';
+export const API_URL = '/api';
 export const COMPANY_NAME = 'ТФОМС Иркутской области';
 export const DEFAULT_OKATO = '25000';

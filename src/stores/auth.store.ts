@@ -36,9 +36,14 @@ export const useAuthStore = defineStore('auth', () => {
 
       const data = await response.json()
 
-      if (!data || !data.token) {
-        const message = data && data.message ? data.message : 'Ошибка авторизации'
-        throw new Error(message)
+      if (!response.ok) {
+        if (Array.isArray(data) && data.length > 0) {
+          throw new Error(data[0]);
+        } else if (data?.message) {
+          throw new Error(data.message);
+        } else {
+          throw new Error('Ошибка авторизации');
+        }
       }
 
       user.value = {
@@ -52,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('user', JSON.stringify(user.value));
       router.push('/');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка авторизации';
+      const message = err instanceof Error ? err.message : 'Ошибка';
       toasts.showError(message);
     } finally {
       isLoading.value = false

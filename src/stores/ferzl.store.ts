@@ -99,8 +99,13 @@ export const useFerzlStore = defineStore('ferzl', () => {
       const data = await response.json()
 
       if (!response.ok) {
-        const message = Array.isArray(data) && data.length > 0 ? data[0] : 'Ошибка поиска';
-        throw new Error(message);
+        if (Array.isArray(data) && data.length > 0) {
+          throw new Error(data[0]);
+        } else if (data?.message) {
+          throw new Error(data.message);
+        } else {
+          throw new Error('Ошибка поиска');
+        }
       }
 
       const items = data.personDataShortItem as PersonDataShort[];
@@ -112,7 +117,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
 
       personList.value = items;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка поиска';
+      const message = err instanceof Error ? err.message : 'Ошибка';
       useToastsStore().showError(message);
     } finally {
       isLoading.value = false
@@ -147,13 +152,18 @@ export const useFerzlStore = defineStore('ferzl', () => {
       const data = await response.json()
 
       if (!response.ok) {
-        const message = Array.isArray(data) && data.length > 0 ? data[0] : 'Ошибка поиска';
-        throw new Error(message);
+        if (Array.isArray(data) && data.length > 0) {
+          throw new Error(data[0]);
+        } else if (data?.message) {
+          throw new Error(data.message);
+        } else {
+          throw new Error('Ошибка поиска');
+        }
       }
 
       personData.value = data;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка поиска';
+      const message = err instanceof Error ? err.message : 'Ошибка';
       useToastsStore().showError(message);
     } finally {
       isLoadingOip.value = false
@@ -184,13 +194,18 @@ export const useFerzlStore = defineStore('ferzl', () => {
       const data = await response.json();
 
       if (!response.ok) {
-        const message = Array.isArray(data) && data.length > 0 ? data[0] : 'Ошибка запроса';
-        throw new Error(message);
+        if (Array.isArray(data) && data.length > 0) {
+          throw new Error(data[0]);
+        } else if (data?.message) {
+          throw new Error(data.message);
+        } else {
+          throw new Error('Ошибка поиска');
+        }
       }
 
       legalRepList.value = data
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка запроса';
+      const message = err instanceof Error ? err.message : 'Ошибка';
       useToastsStore().showError(message);
     } finally {
       isLoadingLegalRep.value = false

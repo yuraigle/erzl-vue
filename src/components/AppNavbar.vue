@@ -33,18 +33,10 @@ const auth = useAuthStore()
                 Поиск застрахованных
               </RouterLink>
             </li>
-            <li class="nav-item dropdown" v-if="false">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                Данные витрин
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <RouterLink class="dropdown-item" to="vdi">Застрахованные лица</RouterLink>
-                </li>
-                <li>
-                  <RouterLink class="dropdown-item" to="vda">Прикрепление к МО</RouterLink>
-                </li>
-              </ul>
+            <li class="nav-item" v-if="auth.user?.role === 9">
+              <RouterLink class="nav-link" to="/users" active-class="active">
+                Администрирование
+              </RouterLink>
             </li>
           </ul>
           <ul class="navbar-nav mb-2 mb-lg-0">

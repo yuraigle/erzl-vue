@@ -66,7 +66,9 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const isLoadingLegalRep = ref(false);
   const lastForm = ref<SearchParams | null>(null);
 
-  const token = JSON.parse(localStorage.getItem('user') || 'null')['token'];
+  const getToken = (): string => {
+    return JSON.parse(localStorage.getItem('user') || 'null')['token']
+  };
 
   const searchCriteria = async (params: SearchParams) => {
     try {
@@ -88,7 +90,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': getToken(),
         },
         body: JSON.stringify(convertParams(params)),
       })
@@ -141,7 +143,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': getToken(),
         },
         body: JSON.stringify({ oip: oip }),
       })
@@ -183,7 +185,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': getToken(),
         },
         body: JSON.stringify({ oip: oip }),
       })

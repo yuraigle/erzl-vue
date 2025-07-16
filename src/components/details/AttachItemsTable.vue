@@ -4,6 +4,9 @@ import { formatDate, compareByStr } from '@/utils'
 import { useAuthStore } from '@/stores'
 import PlusIcon from '../icons/PlusIcon.vue'
 
+import { Modal } from 'bootstrap'
+import AttachFormModal from '../register/AttachFormModal.vue'
+
 defineProps({
   attach: {
     type: Object as () => {
@@ -37,6 +40,12 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
     return b.dateAttachB - a.dateAttachB // then by date
   })
 }
+
+const addAttachment = () => {
+  const modalElement = document.getElementById('modalAttachForm')
+  const modal = Modal.getOrCreateInstance(modalElement)
+  modal.show()
+}
 </script>
 
 <template>
@@ -47,8 +56,8 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
           <div class="d-flex">
             Прикрепления
             <button class="btn btn-link p-0 ms-auto" title="Актуализировать данные"
-              @click="() => {}"
-              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+              @click="addAttachment"
+              :disabled="!auth.user?.role || auth.user?.role < 4"
             >
               <PlusIcon :size="20" />
             </button>
@@ -83,4 +92,6 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
       </tr>
     </tbody>
   </table>
+
+  <AttachFormModal />
 </template>

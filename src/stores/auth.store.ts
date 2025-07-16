@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useToastsStore } from '@/stores'
 import { API_URL } from '@/../environment';
 
-export interface User {
+export interface AuthDetails {
   id: string
   name: string
   role: number
@@ -14,9 +14,7 @@ export interface User {
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
-  const toasts = useToastsStore();
-
-  const user = ref<User | null>(null);
+  const user = ref<AuthDetails | null>(null);
   const isLoading = ref(false);
 
   user.value = JSON.parse(localStorage.getItem('user') || 'null');
@@ -58,7 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
       router.push('/');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Ошибка';
-      toasts.showError(message);
+      useToastsStore().showError(message);
     } finally {
       isLoading.value = false
     }

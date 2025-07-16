@@ -186,7 +186,7 @@ const onSubmit = async () => {
           v-for="n in Object.values(F011)
             .map((n) => n.type)
             .filter((n) => n != '3' && n != '14')"
-          value="{{ n }}"
+          :value="n"
           :key="n"
         >
           {{ n }} - {{ f011DocName(n) }}

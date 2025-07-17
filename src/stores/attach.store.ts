@@ -9,6 +9,7 @@ export interface F032 {
 }
 
 export interface F033 {
+  uidspmo: string
   areaType: number
   oidSpmo: string
   namSkSpmo: string

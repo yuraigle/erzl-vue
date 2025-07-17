@@ -52,7 +52,7 @@ const v$ = useVuelidate(validations, form)
 
 const attachStore = useAttachStore()
 
-const selectedF032 = ref<F032 | null>(null)
+const moObj = ref<F032 | null>(null)
 const spmoList = ref<Array<F033> | null>(null)
 
 const onInputMoCode = (e: Event) => {
@@ -66,11 +66,11 @@ const onInputMoCode = (e: Event) => {
   if (form.mo_code.length == 6) {
     attachStore.searchF032(form.mo_code).then(
       (res) => {
-        selectedF032.value = res
+        moObj.value = res
         form.mo_id = res.oidMo
       },
       (err) => {
-        selectedF032.value = null
+        moObj.value = null
         form.mo_id = ''
         useToastsStore().showError(err)
       },
@@ -88,7 +88,7 @@ const onInputMoCode = (e: Event) => {
       }
     )
   } else {
-    selectedF032.value = null
+    moObj.value = null
     spmoList.value = null
     form.mo_id = ''
     form.mo_dep_id = ''
@@ -213,7 +213,7 @@ const onSubmit = async () => {
 
           <div class="d-flex mt-1">
             <div class="small wide"></div>
-            <div class="small text-muted">{{ selectedF032?.namMok }}</div>
+            <div class="small text-muted">{{ moObj?.namMok }}</div>
           </div>
 
           <div class="my-2 d-flex">
@@ -256,7 +256,7 @@ const onSubmit = async () => {
                 v-model="form.mo_dep_id"
               >
                 <option value=""></option>
-                <option v-for="sp in spmoList" :key="sp.oidSpmo" :value="sp.oidSpmo"
+                <option v-for="sp in spmoList" :key="sp.uidspmo" :value="sp.oidSpmo"
                   :style="{'font-weight': sp.areaType == form.area_type ? 'bold' : 'normal'}"
                   :title="sp.namSkSpmo"
                 >

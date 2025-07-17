@@ -19,7 +19,7 @@ export const useAttachStore = defineStore('attach', () => {
 
   const searchF032 = async (mcod: string): Promise<F032> => {
     return new Promise((resolve, reject) => {
-      fetch('http://10.10.10.111:8082/api' + '/nsi/f032/' + mcod, {
+      fetch(API_URL + '/nsi/f032/' + mcod, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const useAttachStore = defineStore('attach', () => {
 
   const searchF033 = async (mcod: string): Promise<Array<F033>> => {
     return new Promise((resolve, reject) => {
-      fetch('http://10.10.10.111:8082/api' + '/nsi/f033/' + mcod, {
+      fetch(API_URL + '/nsi/f033/' + mcod, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

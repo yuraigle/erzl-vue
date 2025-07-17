@@ -41,7 +41,9 @@ const validations = {
   },
   mo_f_id: {},
   doctor_id: {},
-  snils_doctor: {},
+  snils_doctor: {
+    mask: helpers.withMessage('Формат СНИЛС - 11 цифр', helpers.regex(/^\d{3}-\d{3}-\d{3} \d{2}$/)),
+  },
   doctor_since: {},
   mo_dep_id: {
     required: helpers.withMessage('Обязательное поле', required),
@@ -93,6 +95,16 @@ const onInputMoCode = (e: Event) => {
     form.mo_id = ''
     form.mo_dep_id = ''
   }
+}
+
+const onInputSs = (e: Event) => {
+  form.snils_doctor = (e.target as HTMLInputElement).value
+  form.snils_doctor = form.snils_doctor
+    .replace(/[^\d]+/g, '')
+    .substring(0, 11)
+    .replace(/^(\d{9})(\d)/, '$1 $2')
+    .replace(/^(\d{6})(\d)/, '$1-$2')
+    .replace(/^(\d{3})(\d)/, '$1-$2')
 }
 
 const onSubmit = async () => {
@@ -328,7 +340,8 @@ const onSubmit = async () => {
                 type="text"
                 class="form-control"
                 :class="{ 'is-invalid': v$.snils_doctor.$errors.length > 0 }"
-                v-model="form.snils_doctor"
+                :value="form.snils_doctor"
+                @input="onInputSs"
                 placeholder="СНИЛС"
               />
               <span v-if="v$.snils_doctor.$error" class="invalid-feedback">

@@ -4,7 +4,7 @@ import type { F032, F033 } from '@/stores/attach.store'
 import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, minValue, required } from '@vuelidate/validators'
-import { useAttachStore } from '@/stores/attach.store'
+import { useAttachStore, useToastsStore } from '@/stores'
 
 const form = reactive({
   date_attach_b: '',
@@ -61,37 +61,38 @@ const onInputMoCode = (e: Event) => {
   form.mo_code = (e.target as HTMLInputElement).value
   form.mo_code = form.mo_code.replace(/[^\d]+/g, '').substring(0, 6)
 
-  if (oldVal == form.mo_code) return;
+  if (oldVal == form.mo_code) return
 
   if (form.mo_code.length == 6) {
-    attachStore
-      .searchF032(form.mo_code)
-      .then((m) => {
-        selectedF032.value = m
-        spmoList.value = null
-        form.mo_id = m.oidMo
+    attachStore.searchF032(form.mo_code).then(
+      (res) => {
+        selectedF032.value = res
+        form.mo_id = res.oidMo
+      },
+      (err) => {
+        selectedF032.value = null
+        form.mo_id = ''
+        useToastsStore().showError(err)
+      },
+    )
+
+    attachStore.searchF033(form.mo_code).then(
+      (res) => {
+        spmoList.value = res
         form.mo_dep_id = ''
-      })
-
-    attachStore
-      .searchF033(form.mo_code)
-      .then((lst) => {
-        spmoList.value = lst
-      })
-
+      },
+      (err) => {
+        spmoList.value = null
+        form.mo_dep_id = ''
+        useToastsStore().showError(err)
+      }
+    )
   } else {
     selectedF032.value = null
     spmoList.value = null
     form.mo_id = ''
     form.mo_dep_id = ''
   }
-}
-
-const filteredSpmo = () => {
-  if (!form.area_type) {
-    return [];
-  }
-  return spmoList.value?.filter((sp) => sp.areaType === form.area_type)
 }
 
 const onSubmit = async () => {
@@ -227,7 +228,6 @@ const onSubmit = async () => {
                 class="form-select"
                 :class="{ 'is-invalid': v$.area_type.$errors.length > 0 }"
                 v-model="form.area_type"
-                @change="form.mo_dep_id = ''"
               >
                 <option value="0"></option>
                 <option value="1">1. Терапевт</option>
@@ -256,8 +256,11 @@ const onSubmit = async () => {
                 v-model="form.mo_dep_id"
               >
                 <option value=""></option>
-                <option v-for="sp in filteredSpmo()" :key="sp.oidSpmo" :value="sp.oidSpmo">
-                  {{ sp.oidSpmo?.replace(/^.*\./, '') }} - {{ sp.namSkSpmo }}
+                <option v-for="sp in spmoList" :key="sp.oidSpmo" :value="sp.oidSpmo"
+                  :style="{'font-weight': sp.areaType == form.area_type ? 'bold' : 'normal'}"
+                  :title="sp.namSkSpmo"
+                >
+                  {{ sp.oidSpmo?.replace(/^.*\./, '') }} - {{ sp.namSkSpmo.replace(/^(.{45}).*/, '$1...') }}
                 </option>
               </select>
               <span v-if="v$.mo_dep_id.$error" class="invalid-feedback">

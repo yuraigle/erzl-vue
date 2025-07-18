@@ -22,5 +22,6 @@ const bgClassName = (name: string) => {
 .toast {
   position: fixed;
   right: 10px;
+  z-index: 1100;
 }
 </style>

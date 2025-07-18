@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import type { F032, F033 } from '@/stores/attach.store'
+import type { F032, F033, RegisterAttachRequest } from '@/stores/attach.store'
 
 import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, minValue, required } from '@vuelidate/validators'
-import { useAttachStore, useToastsStore } from '@/stores'
+import { useAttachStore, useToastsStore, useFerzlStore } from '@/stores'
+
+import { Modal } from 'bootstrap'
 
 const form = reactive({
-  date_attach_b: '',
-  date_attach_e: '',
+  date_attach_b: null,
+  date_attach_e: null,
   attach_method: 0,
   area_type: 0,
   area_id: '',
@@ -17,7 +19,7 @@ const form = reactive({
   mo_f_id: '',
   doctor_id: '',
   snils_doctor: '',
-  doctor_since: '',
+  doctor_since: null,
   mo_dep_id: '',
 })
 
@@ -53,6 +55,7 @@ const validations = {
 const v$ = useVuelidate(validations, form)
 
 const attachStore = useAttachStore()
+const ferzlStore = useFerzlStore()
 
 const moObj = ref<F032 | null>(null)
 const spmoList = ref<Array<F033> | null>(null)
@@ -111,8 +114,32 @@ const onSubmit = async () => {
   const isCorrect = await v$.value.$validate()
 
   if (isCorrect) {
-    console.log('In development')
+    const oip = ferzlStore.personData?.oip || null
+    const enp = ferzlStore.personData?.policy?.policyItems
+      .find(p => p.pcyStatus.startsWith('Д'))?.enp || null
+
+    if (!oip || !enp) {
+      useToastsStore().showError('Не найдена активная страховка');
+      return;
+    }
+
+    const dto = {...form, enp} as RegisterAttachRequest
+
+    attachStore.registerAttach(dto)
+      .then(() => {
+        ferzlStore.searchOip(oip)
+        closeModal()
+      })
+      .catch((e: Error) => {
+        useToastsStore().showError(e.message);
+      })
   }
+}
+
+const closeModal = () => {
+  const modalElement = document.getElementById('modalAttachForm')
+  const modal = Modal.getOrCreateInstance(modalElement)
+  modal.hide()
 }
 </script>
 
@@ -299,7 +326,7 @@ const onSubmit = async () => {
                 class="form-control"
                 :class="{ 'is-invalid': v$.area_id.$errors.length > 0 }"
                 v-model="form.area_id"
-                placeholder="GUID участка прикрепления в ФРМО, необязательно"
+                placeholder="GUID участка прикрепления в ФРМО"
               />
               <span v-if="v$.area_id.$error" class="invalid-feedback">
                 {{ v$.area_id.$errors[0].$message }}
@@ -320,7 +347,7 @@ const onSubmit = async () => {
                 class="form-control"
                 :class="{ 'is-invalid': v$.mo_f_id.$errors.length > 0 }"
                 v-model="form.mo_f_id"
-                placeholder="OID филиала МО в ФРМО, необязательно"
+                placeholder="OID филиала МО в ФРМО"
               />
               <span v-if="v$.mo_f_id.$error" class="invalid-feedback">
                 {{ v$.mo_f_id.$errors[0].$message }}
@@ -386,7 +413,7 @@ const onSubmit = async () => {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          <button type="submit" class="btn btn-primary">Добавить</button>
+          <button type="submit" class="btn btn-primary" :disabled="attachStore.isLoadingReg">Добавить</button>
         </div>
       </form>
     </div>

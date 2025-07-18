@@ -41,7 +41,7 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
   })
 }
 
-const addAttachment = () => {
+const addAttachmentModal = () => {
   const modalElement = document.getElementById('modalAttachForm')
   const modal = Modal.getOrCreateInstance(modalElement)
   modal.show()
@@ -56,7 +56,7 @@ const addAttachment = () => {
           <div class="d-flex">
             Прикрепления
             <button class="btn btn-link p-0 ms-auto" title="Актуализировать данные"
-              @click="addAttachment"
+              @click="addAttachmentModal"
               :disabled="!auth.user?.role || auth.user?.role < 4"
             >
               <PlusIcon :size="20" />

@@ -90,7 +90,7 @@ const onInputMoCode = (e: Event) => {
         spmoList.value = null
         form.mo_dep_id = ''
         useToastsStore().showError(err)
-      }
+      },
     )
   } else {
     moObj.value = null
@@ -112,28 +112,28 @@ const onInputSs = (e: Event) => {
 
 const onSubmit = async () => {
   const isCorrect = await v$.value.$validate()
+  if (!isCorrect) return
 
-  if (isCorrect) {
-    const oip = ferzlStore.personData?.oip || null
-    const enp = ferzlStore.personData?.policy?.policyItems
-      .find(p => p.pcyStatus.startsWith('Д'))?.enp || null
+  const oip: string = ferzlStore.personData?.oip || ''
+  const enp: string =
+    ferzlStore.personData?.policy?.policyItems.find((p) => p.pcyStatus.startsWith('Д'))?.enp || ''
 
-    if (!oip || !enp) {
-      useToastsStore().showError('Не найдена активная страховка');
-      return;
-    }
-
-    const dto = {...form, enp} as RegisterAttachRequest
-
-    attachStore.registerAttach(dto)
-      .then(() => {
-        ferzlStore.searchOip(oip)
-        closeModal()
-      })
-      .catch((e: Error) => {
-        useToastsStore().showError(e.message);
-      })
+  if (!oip || !enp) {
+    useToastsStore().showError('Не найдена активная страховка')
+    return
   }
+
+  const dto: RegisterAttachRequest = { ...form, enp }
+
+  attachStore
+    .registerAttach(dto)
+    .then(() => {
+      ferzlStore.searchOip(oip)
+      closeModal()
+    })
+    .catch((e: Error) => {
+      useToastsStore().showError(e.message)
+    })
 }
 
 const closeModal = () => {
@@ -295,11 +295,15 @@ const closeModal = () => {
                 v-model="form.mo_dep_id"
               >
                 <option value=""></option>
-                <option v-for="sp in spmoList" :key="sp.uidspmo" :value="sp.oidSpmo"
-                  :style="{'font-weight': sp.areaType == form.area_type ? 'bold' : 'normal'}"
+                <option
+                  v-for="sp in spmoList"
+                  :key="sp.uidspmo"
+                  :value="sp.oidSpmo"
+                  :style="{ 'font-weight': sp.areaType == form.area_type ? 'bold' : 'normal' }"
                   :title="sp.namSkSpmo"
                 >
-                  {{ sp.oidSpmo?.replace(/^.*\./, '') }} - {{ sp.namSkSpmo.replace(/^(.{45}).*/, '$1...') }}
+                  {{ sp.oidSpmo?.replace(/^.*\./, '') }} -
+                  {{ sp.namSkSpmo.replace(/^(.{45}).*/, '$1...') }}
                 </option>
               </select>
               <span v-if="v$.mo_dep_id.$error" class="invalid-feedback">
@@ -413,7 +417,9 @@ const closeModal = () => {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          <button type="submit" class="btn btn-primary" :disabled="attachStore.isLoadingReg">Добавить</button>
+          <button type="submit" class="btn btn-primary" :disabled="attachStore.isLoadingReg">
+            Добавить
+          </button>
         </div>
       </form>
     </div>

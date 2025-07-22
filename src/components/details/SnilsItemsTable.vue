@@ -3,6 +3,9 @@ import type { SnilsItem } from '@/types/PersonData'
 import { useAuthStore } from '@/stores'
 import PlusIcon from '../icons/PlusIcon.vue'
 
+import { Modal } from 'bootstrap'
+import SnilsFormModal from '../register/SnilsFormModal.vue'
+
 defineProps({
   snils: {
     type: Object as () => {
@@ -14,6 +17,12 @@ defineProps({
 defineEmits(['details'])
 
 const auth = useAuthStore()
+
+const addAttachmentModal = () => {
+  const modalElement = document.getElementById('modalSnilsForm')
+  const modal = Modal.getOrCreateInstance(modalElement)
+  modal.show()
+}
 </script>
 
 <template>
@@ -26,8 +35,8 @@ const auth = useAuthStore()
             <button
               class="btn btn-link p-0 ms-auto"
               title="Актуализировать данные"
-              @click="() => {}"
-              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+              @click="addAttachmentModal"
+              :disabled="!auth.user?.role || auth.user?.role < 4"
             >
               <PlusIcon :size="20" />
             </button>
@@ -56,4 +65,6 @@ const auth = useAuthStore()
       </tr>
     </tbody>
   </table>
+
+  <SnilsFormModal />
 </template>

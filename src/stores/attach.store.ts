@@ -114,7 +114,7 @@ export const useAttachStore = defineStore('attach', () => {
         } else if (data?.message) {
           throw new Error(data.message);
         } else {
-          throw new Error('Ошибка');
+          throw new Error('Ошибка ' +  response.status);
         }
       }
 

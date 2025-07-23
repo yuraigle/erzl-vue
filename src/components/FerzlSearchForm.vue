@@ -106,6 +106,13 @@ const onInputOt = (e: Event) => {
   form.ot = maskFio(form.ot)
 }
 
+const onChangeDocT = () => {
+  if (form.doc_t == 0) {
+    form.doc_s = '';
+    form.doc_n = '';
+  }
+}
+
 const clearForm = () => {
   form.enp = ''
   form.ss = ''
@@ -178,7 +185,9 @@ const onSubmit = async () => {
 
     <div class="mb-2">
       <label for="doc_t" class="d-none"></label>
-      <select id="doc_t" class="form-select" v-model="form.doc_t" :disabled="form.oip_selected">
+      <select id="doc_t" class="form-select" v-model="form.doc_t" :disabled="form.oip_selected"
+        @change="onChangeDocT"
+      >
         <option value="0">Выбрать документ</option>
         <option value="14">14 - {{ f011DocName('14') }}</option>
         <option value="3">3 - {{ f011DocName('3') }}</option>

@@ -4,7 +4,7 @@ import { useToastsStore } from '@/stores';
 import { callApi } from '@/utils/api';
 
 import type { PersonData, PersonDataShort, Pagination } from '@/types/PersonData';
-import type { LegalRepData } from '@/types/LegalRepData';
+import type { LegalRepData, LegalRepResponse } from '@/types/LegalRepData';
 
 export interface SearchParams {
   oip_selected: boolean | null
@@ -31,16 +31,16 @@ const convertParams = (params: SearchParams) => {
   } else {
     dto.enp = params.enp ? params.enp.replace(/[^0-9]+/g, '') : null;
     dto.ss = params.ss ? params.ss.replace(/[^0-9]+/g, '') : null;
-    dto.doc_t = params.doc_t ? params.doc_t : null
-    dto.doc_s = params.doc_s ? params.doc_s.trim() : null
-    dto.doc_n = params.doc_n ? params.doc_n.trim() : null
-    dto.fam = params.fam ? params.fam.trim() : null
-    dto.im = params.im ? params.im.trim() : null
-    dto.ot = params.ot ? params.ot.trim() : null
-    dto.dr_from = params.dr_from ? params.dr_from : null
-    dto.dr_to = params.dr_to ? params.dr_to : null
+    dto.doc_t = params.doc_t && params.doc_t > 0 ? params.doc_t : null;
+    dto.doc_s = params.doc_s ? params.doc_s.trim() : null;
+    dto.doc_n = params.doc_n ? params.doc_n.trim() : null;
+    dto.fam = params.fam ? params.fam.trim() : null;
+    dto.im = params.im ? params.im.trim() : null;
+    dto.ot = params.ot ? params.ot.trim() : null;
+    dto.dr_from = params.dr_from ? params.dr_from : null;
+    dto.dr_to = params.dr_to ? params.dr_to : null;
 
-    dto.okato = params.okato ? params.okato.trim() : null
+    dto.okato = params.okato ? params.okato.trim() : null;
     if (!dto.fam && !dto.im && !dto.ot) {
       dto.okato = null; // подставляем окато только при поиске по ФИО
     }
@@ -56,6 +56,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const pagination = ref<Pagination | null>(null);
   const personData = ref<PersonData | null>(null);
   const legalRepList = ref<LegalRepData[]>([]);
+  const legalRepByList = ref<LegalRepData[]>([]);
   const isLoading = ref(false);
   const isLoadingOip = ref(false);
   const isLoadingLegalRep = ref(false);
@@ -68,6 +69,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
     personList.value = [];
     personData.value = null;
     legalRepList.value = [];
+    legalRepByList.value = [];
     pagination.value = null;
     lastForm.value = null;
   }
@@ -106,6 +108,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
     isLoadingOip.value = true
     personData.value = null;
     legalRepList.value = [];
+    legalRepByList.value = [];
 
     callApi('/person-data', 'POST', JSON.stringify({ oip }))
       .then((data: PersonData) => {
@@ -118,10 +121,13 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const searchLegalRep = async (oip?: string) => {
     isLoadingLegalRep.value = true;
     legalRepList.value = [];
+    legalRepByList.value = [];
 
     callApi('/legal-rep', 'POST', JSON.stringify({ oip }))
-      .then((data: LegalRepData[]) => {
-        legalRepList.value = data
+      .then((data: LegalRepResponse) => {
+        console.log(data);
+        legalRepList.value = data.legalRepresentation?.legalRepresentationItem || [];
+        legalRepByList.value = data.legalRepresentationBy?.legalRepresentationItem || [];
       })
       .catch((err: string) => useToastsStore().showError(err))
       .finally(() => isLoadingLegalRep.value = false)
@@ -134,6 +140,7 @@ export const useFerzlStore = defineStore('ferzl', () => {
     personList,
     personData,
     legalRepList,
+    legalRepByList,
     searchCriteria,
     searchCriteriaPage,
     searchOip,

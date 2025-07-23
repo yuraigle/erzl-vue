@@ -1,8 +1,9 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { useToastsStore } from '@/stores'
-import { API_URL } from '@/../environment';
-import type { PersonData, PersonDataShort } from '@/types/PersonData';
+import { useToastsStore } from '@/stores';
+import { callApi } from '@/utils/api';
+
+import type { PersonData, PersonDataShort, Pagination } from '@/types/PersonData';
 import type { LegalRepData } from '@/types/LegalRepData';
 
 export interface SearchParams {
@@ -20,12 +21,6 @@ export interface SearchParams {
   dr_from: string | null
   dr_to: string | null
   page: number | null
-}
-
-export interface Pagination {
-  pageNumber: number
-  itemPerPage: number
-  count: number
 }
 
 const convertParams = (params: SearchParams) => {
@@ -66,64 +61,38 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const isLoadingLegalRep = ref(false);
   const lastForm = ref<SearchParams | null>(null);
 
-  const getToken = (): string => {
-    return JSON.parse(localStorage.getItem('user') || 'null')['token']
-  };
+  const initialState = () => {
+    isLoading.value = false;
+    isLoadingOip.value = false;
+    isLoadingLegalRep.value = false;
+    personList.value = [];
+    personData.value = null;
+    legalRepList.value = [];
+    pagination.value = null;
+    lastForm.value = null;
+  }
 
   const searchCriteria = async (params: SearchParams) => {
-    try {
-      isLoading.value = true;
-      isLoadingOip.value = false;
-      isLoadingLegalRep.value = false;
-      personList.value = [];
-      personData.value = null;
-      legalRepList.value = [];
-      pagination.value = null;
-      lastForm.value = params;
+    initialState();
 
-      if (params.oip_selected && params.oip) {
-        searchOip(params.oip);
-        return;
-      }
-
-      const response = await fetch(API_URL + '/search-criteria', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': getToken(),
-        },
-        body: JSON.stringify(convertParams(params)),
-      })
-        .catch(() => {
-          throw new Error('Ошибка подключения к серверу')
-        });
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        if (Array.isArray(data) && data.length > 0) {
-          throw new Error(data[0]);
-        } else if (data?.message) {
-          throw new Error(data.message);
-        } else {
-          throw new Error('Ошибка поиска');
-        }
-      }
-
-      const items = data.personDataShortItem as PersonDataShort[];
-      pagination.value = data.pagination;
-
-      if (!items || items.length == 0) {
-        throw new Error('Ничего не найдено')
-      }
-
-      personList.value = items;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка';
-      useToastsStore().showError(message);
-    } finally {
-      isLoading.value = false
+    if (params.oip_selected && params.oip) {
+      return searchOip(params.oip);
     }
+
+    isLoading.value = true;
+    callApi('/search-criteria', 'POST', JSON.stringify(convertParams(params)))
+      .then((data) => {
+        pagination.value = data.pagination;
+
+        const items = data.personDataShortItem as PersonDataShort[];
+        if (!items || items.length == 0) {
+          useToastsStore().showError('Ничего не найдено');
+        }
+        personList.value = items;
+      })
+      .catch((err: string) => useToastsStore().showError(err))
+      .finally(() => isLoading.value = false)
+
   }
 
   const searchCriteriaPage = async (n: number) => {
@@ -134,84 +103,28 @@ export const useFerzlStore = defineStore('ferzl', () => {
   }
 
   const searchOip = async (oip: string) => {
-    try {
-      isLoadingOip.value = true
-      personData.value = null;
-      legalRepList.value = [];
+    isLoadingOip.value = true
+    personData.value = null;
+    legalRepList.value = [];
 
-      const response = await fetch(API_URL + '/person-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': getToken(),
-        },
-        body: JSON.stringify({ oip: oip }),
+    callApi('/person-data', 'POST', JSON.stringify({ oip }))
+      .then((data: PersonData) => {
+        personData.value = data;
       })
-        .catch(() => {
-          throw new Error('Ошибка подключения к серверу')
-        });
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        if (Array.isArray(data) && data.length > 0) {
-          throw new Error(data[0]);
-        } else if (data?.message) {
-          throw new Error(data.message);
-        } else {
-          throw new Error('Ошибка поиска');
-        }
-      }
-
-      personData.value = data;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка';
-      useToastsStore().showError(message);
-    } finally {
-      isLoadingOip.value = false
-    }
+      .catch((err: string) => useToastsStore().showError(err))
+      .finally(() => isLoadingOip.value = false)
   }
 
   const searchLegalRep = async (oip?: string) => {
-    if (!oip) {
-      return;
-    }
-
     isLoadingLegalRep.value = true;
     legalRepList.value = [];
 
-    try {
-      const response = await fetch(API_URL + '/legal-rep', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': getToken(),
-        },
-        body: JSON.stringify({ oip: oip }),
+    callApi('/legal-rep', 'POST', JSON.stringify({ oip }))
+      .then((data: LegalRepData[]) => {
+        legalRepList.value = data
       })
-        .catch(() => {
-          throw new Error('Ошибка подключения к серверу')
-        });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (Array.isArray(data) && data.length > 0) {
-          throw new Error(data[0]);
-        } else if (data?.message) {
-          throw new Error(data.message);
-        } else {
-          throw new Error('Ошибка поиска');
-        }
-      }
-
-      legalRepList.value = data
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка';
-      useToastsStore().showError(message);
-    } finally {
-      isLoadingLegalRep.value = false
-    }
+      .catch((err: string) => useToastsStore().showError(err))
+      .finally(() => isLoadingLegalRep.value = false)
   }
 
   return {

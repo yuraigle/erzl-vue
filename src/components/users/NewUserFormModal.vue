@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, minLength } from '@vuelidate/validators'
-import { useUsersStore } from '@/stores'
+import { useUsersStore, useToastsStore } from '@/stores'
 
 const form = reactive({
   username: '',
@@ -35,7 +35,10 @@ const onSubmit = async () => {
   const isCorrect = await v$.value.$validate()
 
   if (isCorrect) {
-    usersStore.addUser(form)
+    usersStore
+      .addUser(form)
+      .then(() => window.location.reload())
+      .catch((err: string) => useToastsStore().showError(err))
   }
 }
 </script>

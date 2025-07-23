@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import type UserRequestDto from '@/types/UserRequestDto';
+import type { User, UserRequestDto } from '@/types'
 
 import { ref, onMounted } from 'vue'
+import { useUsersStore, useToastsStore } from '@/stores'
+
+import { Modal } from 'bootstrap'
+import NewUserFormModal from '@/components/users/NewUserFormModal.vue'
+import EditUserFormModal from '@/components/users/EditUserFormModal.vue'
+import DeleteUserModal from '@/components/users/DeleteUserModal.vue'
+
 import PlusIcon from '@/components/icons/PlusIcon.vue'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import RemoveIcon from '@/components/icons/RemoveIcon.vue'
-import { useUsersStore } from '@/stores'
-import NewUserFormModal from '@/components/users/NewUserFormModal.vue'
-
-import { Modal } from 'bootstrap'
-import DeleteUserModal from '@/components/users/DeleteUserModal.vue'
-import EditUserFormModal from '@/components/users/EditUserFormModal.vue'
 
 const usersStore = useUsersStore()
-
-const selectedId = ref(0);
+const selectedId = ref(0)
 const selectedUser = ref<UserRequestDto>()
+const usersList = ref<User[]>([])
 
 const rolesDict = new Map<number, string>()
 rolesDict.set(3, 'Читатель')
@@ -28,6 +29,8 @@ const roleName = (n: number): string => {
 
 onMounted(() => {
   usersStore.getList()
+    .then((items: User[]) => usersList.value = items)
+    .catch((err: string) => useToastsStore().showError(err))
 })
 
 const addUserModal = () => {
@@ -37,8 +40,8 @@ const addUserModal = () => {
 }
 
 const updateUserModal = (id: number, u: UserRequestDto) => {
-  selectedId.value = id;
-  selectedUser.value = u;
+  selectedId.value = id
+  selectedUser.value = u
 
   const modalElement = document.getElementById('modalUserEdit')
   const modal = Modal.getOrCreateInstance(modalElement)
@@ -46,7 +49,7 @@ const updateUserModal = (id: number, u: UserRequestDto) => {
 }
 
 const deleteUserModal = (id: number) => {
-  selectedId.value = id;
+  selectedId.value = id
 
   const modalElement = document.getElementById('modalUserDelete')
   const modal = Modal.getOrCreateInstance(modalElement)
@@ -64,6 +67,7 @@ const deleteUserModal = (id: number) => {
       </button>
     </div>
 
+    <!-- <div v-if="usersStore.isLoading">Загрузка...</div> -->
     <table class="table my-4 table-sm table-hover" style="max-width: 900px">
       <thead>
         <tr>
@@ -75,13 +79,15 @@ const deleteUserModal = (id: number) => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="u in usersStore.userList" :key="u.id">
+        <tr v-for="u in usersList" :key="u.id">
           <td>{{ u.id }}</td>
           <td>{{ u.username }}</td>
           <td>{{ u.role }}. {{ roleName(u.role) }}</td>
           <td>{{ u.name }}</td>
           <td class="text-end">
-            <button class="btn btn-sm py-0 px-1 btn-link text-info" title="Редактировать"
+            <button
+              class="btn btn-sm py-0 px-1 btn-link text-info"
+              title="Редактировать"
               @click="() => updateUserModal(u.id, u)"
             >
               <EditIcon />

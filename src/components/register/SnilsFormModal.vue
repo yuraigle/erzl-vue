@@ -40,21 +40,19 @@ const onSubmit = async () => {
   const oip: string = ferzlStore.personData?.oip || ''
 
   if (!oip) {
-    useToastsStore().showError('Не найдена активная страховка')
-    return
+    return useToastsStore().showError('Не найдена активная страховка')
   }
 
-  const dto: RegisterSnilsRequest = {...form, oip}
+  const dto: RegisterSnilsRequest = { ...form, oip }
 
   regStore
     .registerSnils(dto)
     .then(() => {
+      useToastsStore().showMessage('СНИЛС добавлен', 'success')
       ferzlStore.searchOip(oip)
       closeModal()
     })
-    .catch((e: Error) => {
-      useToastsStore().showError(e.message)
-    })
+    .catch((err: string) => useToastsStore().showError(err))
 }
 
 const closeModal = () => {
@@ -96,7 +94,9 @@ const closeModal = () => {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          <button type="submit" class="btn btn-primary" :disabled="regStore.isLoadingReg">Добавить</button>
+          <button type="submit" class="btn btn-primary" :disabled="regStore.isLoadingReg">
+            Добавить
+          </button>
         </div>
       </form>
     </div>

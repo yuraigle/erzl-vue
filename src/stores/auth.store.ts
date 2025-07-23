@@ -2,15 +2,9 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router'
 import { useToastsStore } from '@/stores'
-import { API_URL } from '@/../environment';
+import { callApi } from '@/utils/api';
 
-export interface AuthDetails {
-  id: string
-  name: string
-  role: number
-  token: string
-  till: number
-}
+import type { AuthDetails } from '@/types';
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
@@ -20,46 +14,15 @@ export const useAuthStore = defineStore('auth', () => {
   user.value = JSON.parse(localStorage.getItem('user') || 'null');
 
   const login = async (username: string, password: string) => {
-    try {
-      isLoading.value = true
-
-      const response = await fetch(API_URL + '/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+    isLoading.value = true
+    callApi('/login', 'POST', JSON.stringify({ username, password }))
+      .then((data: AuthDetails) => {
+        user.value = { ...data, till: Date.now() + 12 * 60 * 60 * 1000 };
+        localStorage.setItem('user', JSON.stringify(user.value));
+        router.push('/');
       })
-        .catch(() => {
-          throw new Error('Ошибка подключения к серверу')
-        });
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        if (Array.isArray(data) && data.length > 0) {
-          throw new Error(data[0]);
-        } else if (data?.message) {
-          throw new Error(data.message);
-        } else {
-          throw new Error('Ошибка авторизации');
-        }
-      }
-
-      user.value = {
-        id: data.id || 0,
-        name: data.name,
-        role: data.role,
-        token: data.token,
-        till: Date.now() + 12 * 60 * 60 * 1000 // 12 hours
-      }
-
-      localStorage.setItem('user', JSON.stringify(user.value));
-      router.push('/');
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка';
-      useToastsStore().showError(message);
-    } finally {
-      isLoading.value = false
-    }
+      .catch((err: string) => useToastsStore().showError(err))
+      .finally(() => isLoading.value = false)
   };
 
   const logout = () => {

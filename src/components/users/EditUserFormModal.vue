@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type UserRequestDto from '@/types/UserRequestDto'
+import type { UserRequestDto } from '@/types'
 
 import { reactive, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, minLength } from '@vuelidate/validators'
-import { useUsersStore } from '@/stores'
+import { useUsersStore, useToastsStore } from '@/stores'
 
 const props = defineProps({
   id: Number,
@@ -55,7 +55,10 @@ const onSubmit = async () => {
   const isCorrect = await v$.value.$validate()
 
   if (isCorrect) {
-    usersStore.editUser(props.id || 0, form)
+    usersStore
+      .editUser(props.id || 0, form)
+      .then(() => window.location.reload())
+      .catch((err: string) => useToastsStore().showError(err))
   }
 }
 </script>
@@ -97,10 +100,9 @@ const onSubmit = async () => {
                 class="form-control"
                 :class="{ 'is-invalid': v$.password.$errors.length > 0 }"
                 v-model="form.password"
+                autocomplete="new-password"
               />
-              <div class="text-muted small">
-                Чтобы не менять пароль, оставьте поле пустым
-              </div>
+              <div class="text-muted small">Чтобы не менять пароль, оставьте поле пустым</div>
               <span v-if="v$.password.$error" class="invalid-feedback">
                 {{ v$.password.$errors[0].$message }}
               </span>

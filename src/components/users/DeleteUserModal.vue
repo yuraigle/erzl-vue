@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUsersStore } from '@/stores'
+import { useUsersStore, useToastsStore } from '@/stores'
 
 const props = defineProps({
   id: Number,
@@ -8,7 +8,10 @@ const props = defineProps({
 const usersStore = useUsersStore()
 
 const onSubmit = async () => {
-  usersStore.deleteUser(props.id || 0);
+  usersStore
+    .deleteUser(props.id || 0)
+    .then(() => window.location.reload())
+    .catch((err: string) => useToastsStore().showError(err))
 }
 </script>
 

@@ -128,12 +128,11 @@ const onSubmit = async () => {
   attachStore
     .registerAttach(dto)
     .then(() => {
+      useToastsStore().showMessage('Прикрепление добавлено', 'success')
       ferzlStore.searchOip(oip)
       closeModal()
     })
-    .catch((e: Error) => {
-      useToastsStore().showError(e.message)
-    })
+    .catch((err: string) => useToastsStore().showError(err))
 }
 
 const closeModal = () => {

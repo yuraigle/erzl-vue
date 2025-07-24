@@ -136,6 +136,7 @@ const onSubmit = async () => {
   const isCorrect = await v$.value.$validate()
 
   if (isCorrect) {
+    form.page = 1
     ferzl.searchCriteria(form)
   }
 }

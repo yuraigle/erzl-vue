@@ -3,27 +3,11 @@ import { defineStore } from 'pinia';
 import { useToastsStore } from '@/stores';
 import { callApi } from '@/utils/api';
 
-import type { PersonData, PersonDataShort, Pagination } from '@/types/PersonData';
+import type { PersonSearchParams, Pagination } from '@/types';
+import type { PersonData, PersonDataShort } from '@/types/PersonData';
 import type { LegalRepData, LegalRepResponse } from '@/types/LegalRepData';
 
-export interface SearchParams {
-  oip_selected: boolean | null
-  oip: string | null
-  enp: string | null
-  ss: string | null
-  doc_t: number | null
-  doc_s: string | null
-  doc_n: string | null
-  fam: string | null
-  im: string | null
-  ot: string | null
-  okato: string | null
-  dr_from: string | null
-  dr_to: string | null
-  page: number | null
-}
-
-const convertParams = (params: SearchParams) => {
+const convertParams = (params: PersonSearchParams) => {
   const dto = {} as SearchParams;
 
   if (params.oip_selected) {
@@ -60,30 +44,26 @@ export const useFerzlStore = defineStore('ferzl', () => {
   const isLoading = ref(false);
   const isLoadingOip = ref(false);
   const isLoadingLegalRep = ref(false);
-  const lastForm = ref<SearchParams | null>(null);
+  const lastForm = ref<PersonSearchParams | null>(null);
 
-  const initialState = () => {
-    isLoading.value = false;
-    isLoadingOip.value = false;
-    isLoadingLegalRep.value = false;
-    personList.value = [];
+  const clearPersonData = () => {
     personData.value = null;
     legalRepList.value = [];
     legalRepByList.value = [];
-    pagination.value = null;
-    lastForm.value = null;
   }
 
-  const searchCriteria = async (params: SearchParams) => {
-    initialState();
+  const searchCriteria = async (params: PersonSearchParams) => {
 
     if (params.oip_selected && params.oip) {
       return searchOip(params.oip);
     }
 
+    clearPersonData();
     isLoading.value = true;
+
     callApi('/search-criteria', 'POST', JSON.stringify(convertParams(params)))
       .then((data) => {
+        lastForm.value = params;
         pagination.value = data.pagination;
 
         const items = data.personDataShortItem as PersonDataShort[];
@@ -92,7 +72,11 @@ export const useFerzlStore = defineStore('ferzl', () => {
         }
         personList.value = items;
       })
-      .catch((err: string) => useToastsStore().showError(err))
+      .catch((err: string) => {
+        useToastsStore().showError(err)
+        personList.value = [];
+        pagination.value = null;
+      })
       .finally(() => isLoading.value = false)
 
   }
@@ -105,10 +89,8 @@ export const useFerzlStore = defineStore('ferzl', () => {
   }
 
   const searchOip = async (oip: string) => {
-    isLoadingOip.value = true
-    personData.value = null;
-    legalRepList.value = [];
-    legalRepByList.value = [];
+    clearPersonData();
+    isLoadingOip.value = true;
 
     callApi('/person-data', 'POST', JSON.stringify({ oip }))
       .then((data: PersonData) => {

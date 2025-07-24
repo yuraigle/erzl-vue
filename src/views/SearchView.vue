@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFerzlStore } from '@/stores/ferzl.store'
-import FerzlSearchForm from '@/components/FerzlSearchForm.vue'
+import FerzlSearchForm from '@/components/PersonSearchForm.vue'
 import PersonDetails from '@/components/PersonDetails.vue'
 import PersonSearchResults from '@/components/PersonSearchResults.vue'
 

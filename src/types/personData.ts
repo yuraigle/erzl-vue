@@ -29,12 +29,6 @@ export interface PersonData {
   };
 }
 
-export interface Pagination {
-  pageNumber: number
-  itemPerPage: number
-  count: number
-}
-
 export interface PersonDataShort {
   fio: string
   enp: string

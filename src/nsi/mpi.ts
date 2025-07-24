@@ -140,6 +140,7 @@ export const mpi = `
 3.20.1.3.||legRepDateB|О|Дата начала законного представительства|date|
 3.20.1.4.||legRepDateE|О|Плановая дата окончания законного представительства|date|
 3.20.1.5.||status|О|Статус законного представительства|string|
+3.20.1.5.||vouchers|О|Документ, подтверждающий статус представителя|object
 `
 
 export const getMpiFiltered = (type: string): Map<string, string> => {

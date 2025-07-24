@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFerzlStore } from '@/stores/ferzl.store'
+import { useFerzlStore } from '@/stores'
 import { formatDate } from '@/utils'
 
 const ferzlStore = useFerzlStore()
@@ -20,14 +20,15 @@ const hasPagination = (): boolean => {
 }
 
 const setPage = (n: number) => {
+  // todo: анимацию загрузки
   ferzlStore.searchCriteriaPage(n)
 }
 
 const itemsStartIndex = () => {
   if (ferzlStore.pagination) {
-    return ferzlStore.pagination.itemPerPage * (ferzlStore.pagination.pageNumber - 1);
+    return ferzlStore.pagination.itemPerPage * (ferzlStore.pagination.pageNumber - 1)
   }
-  return 0;
+  return 0
 }
 </script>
 
@@ -51,7 +52,7 @@ const itemsStartIndex = () => {
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody :class="{ 'table-loading': ferzlStore.isLoading }">
       <tr v-for="(person, index) in ferzlStore.personList" :key="person.oip">
         <td>{{ itemsStartIndex() + index + 1 }}</td>
         <td>{{ person.oip }}</td>
@@ -103,3 +104,10 @@ const itemsStartIndex = () => {
     </ul>
   </nav>
 </template>
+
+<style scoped>
+.table-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+</style>

@@ -8,7 +8,7 @@ import type { PersonData, PersonDataShort } from '@/types/PersonData';
 import type { LegalRepData, LegalRepResponse } from '@/types/LegalRepData';
 
 const convertParams = (params: PersonSearchParams) => {
-  const dto = {} as SearchParams;
+  const dto = {} as PersonSearchParams;
 
   if (params.oip_selected) {
     dto.oip = params.oip ? params.oip.replace(/[^0-9]+/g, '') : null;
@@ -107,7 +107,6 @@ export const useFerzlStore = defineStore('ferzl', () => {
 
     callApi('/legal-rep', 'POST', JSON.stringify({ oip }))
       .then((data: LegalRepResponse) => {
-        console.log(data);
         legalRepList.value = data.legalRepresentation?.legalRepresentationItem || [];
         legalRepByList.value = data.legalRepresentationBy?.legalRepresentationItem || [];
       })

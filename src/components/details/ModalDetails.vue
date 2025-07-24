@@ -2,6 +2,7 @@
 import { formatDate, formatDateTime, ucFirst } from '@/utils'
 import { getMpiFiltered } from '@/nsi/mpi'
 import { f011DocName } from '@/nsi/f011'
+import GarCodeDetails from '@/components/details/GarCodeDetails.vue';
 
 const props = defineProps({
   obj: {
@@ -52,14 +53,14 @@ const formatGender = (n: string): string => {
 
 const formatDudlType = (n: string): string => {
   const name = f011DocName(n)
-  return name ? n + '. ' + f011DocName(n) : n;
+  return name ? n + '. ' + f011DocName(n) : n
 }
 
-const formatAddressType =  (n: string): string => {
+const formatAddressType = (n: string): string => {
   const dict = [
     'Адрес регистрации по месту жительства',
     'Адрес по месту пребывания (временной регистрации)',
-    'Адрес фактического проживания (пребывания)'
+    'Адрес фактического проживания (пребывания)',
   ]
   return n + '. ' + dict[parseInt(n) - 1]
 }
@@ -93,7 +94,12 @@ const formatSocialStatus = (n: string): string => {
             <tbody v-if="obj">
               <tr v-for="(key, index) in Object.keys(obj)" :key="key">
                 <td>{{ mpiFormatName(key) }}:</td>
-                <td>{{ mpiFormatValue(Object.values(obj)[index], key) }}</td>
+                <td v-if="key === 'aoguid' || key === 'hsguid'">
+                  <GarCodeDetails :code="Object.values(obj)[index]" />
+                </td>
+                <td v-else>
+                  {{ mpiFormatValue(Object.values(obj)[index], key) }}
+                </td>
               </tr>
             </tbody>
           </table>

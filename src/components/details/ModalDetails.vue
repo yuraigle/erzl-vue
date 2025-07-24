@@ -2,7 +2,8 @@
 import { formatDate, formatDateTime, ucFirst } from '@/utils'
 import { getMpiFiltered } from '@/nsi/mpi'
 import { f011DocName } from '@/nsi/f011'
-import GarCodeDetails from '@/components/details/GarCodeDetails.vue';
+import GarCodeDetails from './GarCodeDetails.vue';
+import MoCodeDetails from './MoCodeDetails.vue';
 
 const props = defineProps({
   obj: {
@@ -96,6 +97,9 @@ const formatSocialStatus = (n: string): string => {
                 <td>{{ mpiFormatName(key) }}:</td>
                 <td v-if="key === 'aoguid' || key === 'hsguid'">
                   <GarCodeDetails :code="Object.values(obj)[index]" />
+                </td>
+                <td v-else-if="key === 'moCode'">
+                  <MoCodeDetails :code="Object.values(obj)[index]" />
                 </td>
                 <td v-else>
                   {{ mpiFormatValue(Object.values(obj)[index], key) }}

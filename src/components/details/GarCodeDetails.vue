@@ -17,14 +17,25 @@ const gar = useGarStore()
   {{ props.code }}
   <button
     v-if="props.code"
-    class="btn btn-sm btn-link py-0"
+    class="link py-0 px-2"
     title="Нажмите для расшифровки кода ГАР"
     @click="gar.search(props.code)"
     :disabled="gar.isLoading || gar.cached.has(props.code)"
   >
-    <InfoIcon :size="20" />
+    <InfoIcon :size="16" />
   </button>
   <div class="text-muted small italic">
     {{ gar.cached.get(props.code) || '' }}
   </div>
 </template>
+
+<style scoped>
+button.link {
+  border: 0;
+  background: transparent;
+  color: #0d6efd;
+}
+button.link:disabled {
+  color: gray;
+}
+</style>

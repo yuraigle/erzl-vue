@@ -18,6 +18,7 @@ export const useGarStore = defineStore('gar', () => {
         cached.value.set(code, data.text);
       })
       .catch((err: string) => {
+        cached.value.set(code, '-');
         useToastsStore().showError(err);
       })
       .finally(() => isLoading.value = false)

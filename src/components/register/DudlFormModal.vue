@@ -15,25 +15,25 @@ const props = defineProps({
 })
 
 const form = reactive<RegisterDudlRequest>({
-  dudl_ser: '', //
-  dudl_num: '', //
-  dudl_date_b: null, //
-  dudl_date_e: null, //
-  dudl_type: null, //
-  issuer: null, //
-  issuer_oksm: null, //
-  ctzn_oksm: null, //
-  no_citizenship: false, //
+  dudl_ser: '',
+  dudl_num: '',
+  dudl_date_b: null,
+  dudl_date_e: null,
+  dudl_type: null,
+  issuer: null,
+  issuer_oksm: null,
+  ctzn_oksm: null,
+  no_citizenship: false,
   descr: null,
-  surname: '', //
-  patronymic: null, //
-  first_name: '', //
-  birth_day: null, //
-  birthplace: null, //
-  gender: 0, //
-  birth_oksm: null, //
+  surname: '',
+  patronymic: null,
+  first_name: '',
+  birth_day: null,
+  birthplace: null,
+  gender: 0,
+  birth_oksm: null,
   dost: null,
-  dudl_code_division: null, //
+  dudl_code_division: null,
 })
 
 const validations = {

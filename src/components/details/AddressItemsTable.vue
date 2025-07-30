@@ -4,6 +4,9 @@ import { formatDate, compareByStr } from '@/utils'
 import { useAuthStore } from '@/stores'
 
 import PlusIcon from '../icons/PlusIcon.vue'
+import AddressFormModal from '../register/AddressFormModal.vue'
+
+import { Modal } from 'bootstrap'
 
 defineProps({
   address: {
@@ -46,6 +49,10 @@ const addressTypeName = (type: string): string => {
       return ''
   }
 }
+
+const addModal = () => {
+  Modal.getOrCreateInstance(document.getElementById('modalAddressForm')).show()
+}
 </script>
 
 <template>
@@ -58,8 +65,8 @@ const addressTypeName = (type: string): string => {
             <button
               class="btn btn-link p-0 ms-auto"
               title="Актуализировать данные"
-              @click="() => {}"
-              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+              @click="addModal"
+              :disabled="!auth.user?.role || auth.user?.role < 4"
             >
               <PlusIcon :size="20" />
             </button>
@@ -97,4 +104,6 @@ const addressTypeName = (type: string): string => {
       </tr>
     </tbody>
   </table>
+
+  <AddressFormModal />
 </template>

@@ -8,3 +8,4 @@ export type { PersonItem } from './PersonData';
 
 export type { RegisterSnilsRequest } from './dto/RegisterSnilsRequest';
 export type { RegisterDudlRequest } from './dto/RegisterDudlRequest';
+export type { RegisterAddressRequest } from './dto/RegisterAddressRequest';

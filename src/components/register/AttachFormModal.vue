@@ -53,7 +53,6 @@ const validations = {
 }
 
 const v$ = useVuelidate(validations, form)
-
 const attachStore = useAttachStore()
 const ferzlStore = useFerzlStore()
 

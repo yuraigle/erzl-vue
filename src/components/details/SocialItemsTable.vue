@@ -47,7 +47,7 @@ const socialStatusName = (socialStatus: string): string => {
         role="button"
         @click="$emit('details', s)"
       >
-        <td>{{ s.socialStatus }} - {{ socialStatusName(s.socialStatus) }}</td>
+        <td>{{ s.socialStatus }}. {{ socialStatusName(s.socialStatus) }}</td>
         <td class="text-end">
           {{ formatDate(s.regDate) }}
         </td>

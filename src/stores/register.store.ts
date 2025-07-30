@@ -2,7 +2,11 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { callApi } from '@/utils/api';
 
-import type { RegisterSnilsRequest, RegisterDudlRequest } from '@/types';
+import type {
+  RegisterSnilsRequest,
+  RegisterDudlRequest,
+  RegisterAddressRequest
+} from '@/types';
 
 export const useRegisterStore = defineStore('register', () => {
 
@@ -29,9 +33,20 @@ export const useRegisterStore = defineStore('register', () => {
     });
   }
 
+  const registerAddress = async (oip: string, dto: RegisterAddressRequest): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      isLoadingReg.value = true;
+      callApi(`/person/${oip}/address`, 'POST', JSON.stringify(dto))
+        .then(() => resolve())
+        .catch((err: string) => reject(err))
+        .finally(() => isLoadingReg.value = false)
+    });
+  }
+
   return {
     isLoadingReg,
     registerSnils,
-    registerDudl
+    registerDudl,
+    registerAddress
   }
 })

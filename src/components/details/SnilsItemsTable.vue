@@ -2,9 +2,10 @@
 import type { SnilsItem } from '@/types/PersonData'
 import { useAuthStore } from '@/stores'
 import PlusIcon from '../icons/PlusIcon.vue'
+import SnilsFormModal from '../register/SnilsFormModal.vue'
 
 import { Modal } from 'bootstrap'
-import SnilsFormModal from '../register/SnilsFormModal.vue'
+
 
 defineProps({
   snils: {
@@ -19,9 +20,7 @@ defineEmits(['details'])
 const auth = useAuthStore()
 
 const addAttachmentModal = () => {
-  const modalElement = document.getElementById('modalSnilsForm')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.show()
+  Modal.getOrCreateInstance(document.getElementById('modalSnilsForm')).show()
 }
 </script>
 

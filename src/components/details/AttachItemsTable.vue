@@ -42,9 +42,7 @@ const itemsOrder = (items?: AttachItem[]): AttachItem[] => {
 }
 
 const addAttachmentModal = () => {
-  const modalElement = document.getElementById('modalAttachForm')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.show()
+  Modal.getOrCreateInstance(document.getElementById('modalAttachForm')).show()
 }
 </script>
 

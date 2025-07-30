@@ -136,9 +136,7 @@ const onSubmit = async () => {
 }
 
 const closeModal = () => {
-  const modalElement = document.getElementById('modalAttachForm')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.hide()
+  Modal.getOrCreateInstance(document.getElementById('modalAttachForm')).hide()
 }
 </script>
 

@@ -29,9 +29,7 @@ const showDetails = (o1: object, type: string) => {
   selectedObj.value = o1
   selectedType.value = type
 
-  const modalElement = document.getElementById('modalDetails')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.show()
+  Modal.getOrCreateInstance(document.getElementById('modalDetails')).show()
 }
 </script>
 

@@ -3,11 +3,11 @@ import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, required } from '@vuelidate/validators'
 import { useToastsStore, useFerzlStore, useRegisterStore } from '@/stores'
-import type { RegisterSnilsRequest } from '@/stores/register.store'
+import type { RegisterSnilsRequest } from '@/types'
 
 import { Modal } from 'bootstrap'
 
-const form = reactive({
+const form = reactive<RegisterSnilsRequest>({
   ss: '',
 })
 
@@ -38,15 +38,12 @@ const onSubmit = async () => {
   if (!isCorrect) return
 
   const oip: string = ferzlStore.personData?.oip || ''
-
   if (!oip) {
     return useToastsStore().showError('Не найдена активная страховка')
   }
 
-  const dto: RegisterSnilsRequest = { ...form, oip }
-
   regStore
-    .registerSnils(dto)
+    .registerSnils(oip, { ...form })
     .then(() => {
       useToastsStore().showMessage('СНИЛС добавлен', 'success')
       ferzlStore.searchOip(oip)
@@ -56,9 +53,7 @@ const onSubmit = async () => {
 }
 
 const closeModal = () => {
-  const modalElement = document.getElementById('modalSnilsForm')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.hide()
+  Modal.getOrCreateInstance(document.getElementById('modalSnilsForm')).hide()
 }
 </script>
 

@@ -15,7 +15,7 @@ const ferzlStore = useFerzlStore()
     </div>
     <div class="container-fluid">
       <PersonSearchResults v-if="ferzlStore.personList && ferzlStore.personList.length > 0" />
-      <PersonDetails v-if="ferzlStore.personData !== null" :pd="ferzlStore.personData" />
+      <PersonDetails v-if="ferzlStore.personData !== null" :pd="ferzlStore.personData" :key="ferzlStore.personData.oip" />
     </div>
   </div>
 </template>

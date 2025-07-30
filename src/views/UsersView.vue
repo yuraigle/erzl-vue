@@ -34,26 +34,18 @@ onMounted(() => {
 })
 
 const addUserModal = () => {
-  const modalElement = document.getElementById('modalUserCreate')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.show()
+  Modal.getOrCreateInstance(document.getElementById('modalUserCreate')).show()
 }
 
 const updateUserModal = (id: number, u: UserRequestDto) => {
   selectedId.value = id
   selectedUser.value = u
-
-  const modalElement = document.getElementById('modalUserEdit')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.show()
+  Modal.getOrCreateInstance(document.getElementById('modalUserEdit')).show()
 }
 
 const deleteUserModal = (id: number) => {
   selectedId.value = id
-
-  const modalElement = document.getElementById('modalUserDelete')
-  const modal = Modal.getOrCreateInstance(modalElement)
-  modal.show()
+  Modal.getOrCreateInstance(document.getElementById('modalUserDelete')).show()
 }
 </script>
 

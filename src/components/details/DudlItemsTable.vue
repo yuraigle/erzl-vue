@@ -4,6 +4,9 @@ import { formatDate } from '@/utils'
 import { useAuthStore } from '@/stores'
 import { f011DocName } from '@/nsi/f011'
 import PlusIcon from '../icons/PlusIcon.vue'
+import DudlFormModal from '../register/DudlFormModal.vue'
+
+import { Modal } from 'bootstrap'
 
 defineProps({
   dudl: {
@@ -16,6 +19,10 @@ defineProps({
 defineEmits(['details'])
 
 const auth = useAuthStore()
+
+const addDudlModal = () => {
+  Modal.getOrCreateInstance(document.getElementById('modalDudlForm')).show()
+}
 </script>
 
 <template>
@@ -28,8 +35,8 @@ const auth = useAuthStore()
             <button
               class="btn btn-link p-0 ms-auto"
               title="Актуализировать данные"
-              @click="() => {}"
-              :disabled="!auth.user?.role || auth.user?.role < 2 || true"
+              @click="addDudlModal"
+              :disabled="!auth.user?.role || auth.user?.role < 4"
             >
               <PlusIcon :size="20" />
             </button>
@@ -53,4 +60,6 @@ const auth = useAuthStore()
       </tr>
     </tbody>
   </table>
+
+  <DudlFormModal />
 </template>

@@ -44,7 +44,7 @@ const showDetails = (o1: object, type: string) => {
         <LegalRepsTable :oip="pd.oip" @details="(x) => showDetails(x, '3.20.')" />
       </div>
       <div class="col">
-        <DudlItemsTable :dudl="pd.dudl" @details="(x) => showDetails(x, '3.4.')" />
+        <DudlItemsTable :oip="pd.oip" :dudl="pd.dudl" @details="(x) => showDetails(x, '3.4.')" />
         <SnilsItemsTable :snils="pd.snils" @details="(x) => showDetails(x, '3.8.')" />
         <SocialItemsTable :social="pd.socialStatus" @details="(x) => showDetails(x, '3.9.')" />
       </div>

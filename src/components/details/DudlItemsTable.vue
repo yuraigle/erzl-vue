@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DudlItem } from '@/types/PersonData'
+
 import { formatDate } from '@/utils'
 import { useAuthStore } from '@/stores'
 import { f011DocName } from '@/nsi/f011'
@@ -9,6 +10,7 @@ import DudlFormModal from '../register/DudlFormModal.vue'
 import { Modal } from 'bootstrap'
 
 defineProps({
+  oip: String,
   dudl: {
     type: Object as () => {
       dudlItems: DudlItem[]
@@ -61,5 +63,5 @@ const addDudlModal = () => {
     </tbody>
   </table>
 
-  <DudlFormModal />
+  <DudlFormModal :oip="oip" />
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PersonItem } from '@/types/PersonData'
-import { formatDate, compareByStr } from '@/utils'
+import { formatDate } from '@/utils'
 
 defineProps({
   person: {
@@ -15,13 +15,7 @@ defineEmits(['details'])
 const itemsOrder = (items?: PersonItem[]): PersonItem[] => {
   if (!items) return []
   return items.sort((a, b) => {
-    const a1 = a.status ? a.status.substring(0, 1) : ''
-    const b1 = b.status ? b.status.substring(0, 1) : ''
-    if (a1 != b1) {
-      return compareByStr(a1, b1)
-    }
-
-    return b.dateEdit - a.dateEdit // then by date
+    return b.dateEdit - a.dateEdit
   })
 }
 </script>

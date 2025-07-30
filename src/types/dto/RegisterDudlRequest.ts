@@ -12,7 +12,7 @@ export interface RegisterDudlRequest {
   surname: string
   patronymic: string | null
   first_name: string
-  birth_day: number | null
+  birth_day: string | null
   birthplace: string | null
   gender: number | null
   birth_oksm: string | null

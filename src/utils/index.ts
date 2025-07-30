@@ -19,6 +19,11 @@ export const formatDate = (ts: number | null): string => {
   return new Date(ts).toLocaleDateString('ru-RU');
 }
 
+export const formatDateYmd = (ts: number | null): string => {
+  if (!ts) return '';
+  return new Date(ts).toISOString().replace(/T.*/, '');
+}
+
 export const formatDateTime = (ts: number | null): string => {
   if (!ts) return '';
   return Intl.DateTimeFormat("ru-RU", { dateStyle: "short", timeStyle: "long" }).format(new Date(ts));

@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, minValue, required } from '@vuelidate/validators'
 import { useToastsStore, useFerzlStore, useRegisterStore } from '@/stores'
-import type { RegisterDudlRequest } from '@/types'
+import type { RegisterDudlRequest, PersonItem } from '@/types'
 import { F011, f011DocName } from '@/nsi/f011'
+import { formatDateYmd } from '@/utils'
 
 import { Modal } from 'bootstrap'
 import ErrorFeedback from '../ErrorFeedback.vue'
+
+const props = defineProps({
+  oip: String,
+})
 
 const form = reactive<RegisterDudlRequest>({
   dudl_ser: '', //
@@ -71,9 +76,25 @@ const validations = {
 }
 
 const v$ = useVuelidate(validations, form)
-
 const ferzlStore = useFerzlStore()
 const regStore = useRegisterStore()
+
+watch(
+  () => props.oip,
+  (v1: string | undefined, v0: string | undefined) => {
+    if (v1 && v1 != v0) {
+      const personItems: PersonItem[] = ferzlStore.personData?.person.personItems || []
+      const personItem: PersonItem = personItems[0]
+      form.surname = personItem.surname
+      form.patronymic = personItem.patronymic
+      form.first_name = personItem.firstName
+      form.birth_day = formatDateYmd(personItem.birthDay)
+      form.gender = personItem.gender
+      form.birth_oksm = personItem.birthOksm
+    }
+  },
+  { immediate: true },
+)
 
 const onSubmit = async () => {
   const isCorrect = await v$.value.$validate()

@@ -21,7 +21,7 @@ export const formatDate = (ts: number | null): string => {
 
 export const formatDateYmd = (ts: number | null): string => {
   if (!ts) return '';
-  return new Date(ts).toISOString().replace(/T.*/, '');
+  return formatDate(ts).replace(/^(\d{2})\.(\d{2})\.(\d{4})/, "$3-$2-$1");
 }
 
 export const formatDateTime = (ts: number | null): string => {
